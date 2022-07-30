@@ -1,0 +1,615 @@
+21:17:34[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§galwaysday true§r) => {
+  §cstatusCode §7number§e: §r0
+}
+
+21:17:57[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gcamerashake add @s 1 100§r) => {
+  §cplayer §7object§e: §r["FrankyRayMS"]
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rSent a request to the following players for their camera to shake: FrankyRayMS
+}
+
+21:18:03[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gcamerashake stop§r) => {
+  §cplayer §7object§e: §r["FrankyRayMS"]
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rStopping camera shake for the following players: FrankyRayMS
+}
+
+21:18:19[Scripting][warning]-Command Component Data §c[Error]§r: 
+Commands: (§gclear§r) => {
+  §citemsRemoved §7object§e: §r ["0"]
+  §cplayer §7object§e: §r ["FrankyRayMS"]
+  §cstatusCode §7number§e: §r -2147352576
+  §cstatusMessage §7string§e: §r Could not clear the inventory of FrankyRayMS, no items to remove
+}
+
+21:18:32[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gclear§r) => {
+  §citemsRemoved §7object§e: §r["1"]
+  §cplayer §7object§e: §r["FrankyRayMS"]
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rCleared the inventory of FrankyRayMS, removing 1 items
+}
+
+21:18:56[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gclear @s diamond 0 0§r) => {
+  §cplayerTest §7object§e: §r["FrankyRayMS (64)"]
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rFrankyRayMS has 64 items that match the criteria
+}
+
+21:22:19[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gclearspawnpoint§r) => {
+  §cplayer §7object§e: §r["FrankyRayMS"]
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rRemoved FrankyRayMS's spawn point
+}
+
+21:22:40[Scripting][warning]-Command Component Data §c[Error]§r: 
+Commands: (§gconnect§r) => {
+  §cstatusCode §7number§e: §r -2147483648
+  §cstatusMessage §7string§e: §r Syntax error: Unexpected "": at "/connect>><<"
+}
+
+21:22:47[Scripting][warning]-Command Component Data §c[Error]§r: 
+Commands: (§gconnect 1§r) => {
+  §cstatusCode §7number§e: §r -2147352576
+  §cstatusMessage §7string§e: §r Unknown command: wsserver. Please check that the command exists and that you have permission to use it.
+}
+
+21:23:15[Scripting][warning]-Command Component Data §c[Error]§r: 
+Commands: (§gdamage @s 1 fall§r) => {
+  §cstatusCode §7number§e: §r -2147352576
+  §cstatusMessage §7string§e: §r Could not apply damage to FrankyRayMS
+  §cunhurtActors §7object§e: §r ["FrankyRayMS"]
+}
+
+21:23:36[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gdamage @s 1 fall§r) => {
+  §churtActors §7object§e: §r["FrankyRayMS"]
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rApplied damage to FrankyRayMS
+}
+
+21:24:07[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gdamage @s 1 fall entity @e[c=1]§r) => {
+  §churtActors §7object§e: §r["FrankyRayMS"]
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rApplied damage to FrankyRayMS
+}
+
+21:24:29[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gdaylock true§r) => {
+  §cstatusCode §7number§e: §r0
+}
+
+21:24:40[Scripting][warning]-Command Component Data §c[Error]§r: 
+Commands: (§gdeop @s§r) => {
+  §cstatusCode §7number§e: §r -2147352576
+  §cstatusMessage §7string§e: §r Unknown command: deop. Please check that the command exists and that you have permission to use it.
+}
+
+21:24:58[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gdifficulty 0§r) => {
+  §cdifficulty §7string§e: §rPEACEFUL
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rSet game difficulty to PEACEFUL
+}
+
+21:25:05[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gdifficulty 2§r) => {
+  §cdifficulty §7string§e: §rNORMAL
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rSet game difficulty to NORMAL
+}
+
+21:25:23[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§geffect @s saturation§r) => {
+  §camplifier §7number§e: §r0
+  §ceffect §7string§e: §rsaturation
+  §cplayer §7object§e: §r["FrankyRayMS"]
+  §cseconds §7number§e: §r30
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rGave Saturation * 0 to FrankyRayMS for 30 seconds
+}
+
+21:25:56[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§geffect @s clear§r) => {
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rTook all effects from FrankyRayMS
+}
+
+21:26:32[Scripting][warning]-Command Component Data §c[Error]§r: 
+Commands: (§genchant @s aqua_affinity§r) => {
+  §cfailedNames §7object§e: §r ["FrankyRayMS"]
+  §cstatusCode §7number§e: §r -2147352576
+  §cstatusMessage §7string§e: §r The selected enchantment can't be added to the target item: FrankyRayMS
+}
+
+21:26:42[Scripting][warning]-Command Component Data §c[Error]§r: 
+Commands: (§genchant @s sharpness 10§r) => {
+  §cstatusCode §7number§e: §r -2147352576
+  §cstatusMessage §7string§e: §r The number you have entered (10) is too big, it must be at most 5
+Sharpness does not support level 10
+}
+
+21:26:49[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§genchant @s sharpness 5§r) => {
+  §cplayerNames §7object§e: §r["FrankyRayMS"]
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rEnchanting succeeded for FrankyRayMS
+}
+
+21:28:37[Scripting][warning]-Command Component Data §c[Error]§r: 
+Commands: (§gfunction maps§r) => {
+  §cstatusCode §7number§e: §r -2147352576
+  §cstatusMessage §7string§e: §r Function maps not found.
+}
+
+21:28:58[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§ggamemode 0§r) => {
+  §cgameMode §7string§e: §r%createWorldScreen.gameMode.survival
+  §cplayer §7object§e: §r["FrankyRayMS"]
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rSet own game mode to Survival
+}
+
+21:29:02[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§ggamemode 1§r) => {
+  §cgameMode §7string§e: §r%createWorldScreen.gameMode.creative
+  §cplayer §7object§e: §r["FrankyRayMS"]
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rSet own game mode to Creative
+}
+
+21:29:13[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§ggamemode spectator§r) => {
+  §cgameMode §7string§e: §r%createWorldScreen.gameMode.spectator
+  §cplayer §7object§e: §r["FrankyRayMS"]
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rSet own game mode to Spectator
+}
+
+21:29:20[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§ggamemode 1§r) => {
+  §cgameMode §7string§e: §r%createWorldScreen.gameMode.creative
+  §cplayer §7object§e: §r["FrankyRayMS"]
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rSet own game mode to Creative
+}
+
+21:29:42[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§ggamerule commandblockoutput false§r) => {
+  §cname §7string§e: §rcommandblockoutput
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rGame rule commandblockoutput has been updated to false
+  §cvalue §7boolean§e: §rfalse
+}
+
+21:29:58[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§ggamerule randomtickspeed 4§r) => {
+  §cname §7string§e: §rrandomtickspeed
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rGame rule randomtickspeed has been updated to 4
+  §cvalue §7number§e: §r4
+}
+
+21:30:33[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§ggive @s apple§r) => {
+  §citemAmount §7number§e: §r1
+  §citemName §7string§e: §rApple
+  §cplayerName §7object§e: §r["FrankyRayMS"]
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rGave Apple * 1 to FrankyRayMS
+}
+
+21:31:21[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§ghelp 1§r) => {
+  §cbody §7string§e: §r/? <page: int>
+/? [command: CommandName]
+/alwaysday [lock: Boolean]
+/camerashake add <player: target> [intensity: float] [seconds: float] [shakeType: CameraShakeType]
+/camerashake stop [player: target]
+/clear [player: target] [itemName: Item] [data: int] [maxCount: int]
+/clearspawnpoint [player: target]
+  §cpage §7number§e: §r1
+  §cpageCount §7number§e: §r26
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §r§2--- Showing help page 1 of 26 (/help <page>) ---
+/? <page: int>
+/? [command: CommandName]
+/alwaysday [lock: Boolean]
+/camerashake add <player: target> [intensity: float] [seconds: float] [shakeType: CameraShakeType]
+/camerashake stop [player: target]
+/clear [player: target] [itemName: Item] [data: int] [maxCount: int]
+/clearspawnpoint [player: target]
+§2Tip: Use the <tab> key while typing a command to auto-complete the command or its arguments
+}
+
+21:31:40[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§ghelp camerashake§r) => {
+  §ccommand §7string§e: §r§ecamerashake:
+  §cdescription §7string§e: §r§e%commands.screenshake.description
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §r§ecamerashake:
+§eApplies shaking to the players' camera with a specified intensity and duration.
+Usage:
+- /camerashake add <player: target> [intensity: float] [seconds: float] [shakeType: CameraShakeType]
+- /camerashake stop [player: target]
+  §cusage §7string§e: §r- /camerashake add <player: target> [intensity: float] [seconds: float] [shakeType: CameraShakeType]
+- /camerashake stop [player: target]
+}
+
+21:32:01[Scripting][warning]-Command Component Data §c[Error]§r: 
+Commands: (§gkick FrankyRayMS§r) => {
+  §cstatusCode §7number§e: §r -2147352576
+  §cstatusMessage §7string§e: §r The host may not be kicked from the game.
+}
+
+21:32:19[Scripting][warning]-Command Component Data §c[Error]§r: 
+Commands: (§gkill§r) => {
+  §cstatusCode §7number§e: §r -2147352576
+  §cstatusMessage §7string§e: §r No targets matched selector
+}
+
+21:32:23[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gkill @e§r) => {
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rKilled Cow, Chicken, Egg, Skeleton, Skeleton, Chicken, Cow
+  §ctargetname §7object§e: §r["Cow","Chicken","Egg","Skeleton","Skeleton","Chicken","Cow"]
+}
+
+21:32:41[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§glist§r) => {
+  §ccurrentPlayerCount §7number§e: §r1
+  §cmaxPlayerCount §7number§e: §r8
+  §cplayers §7string§e: §rFrankyRayMS
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rThere are 1/8 players online:
+FrankyRayMS
+}
+
+21:33:08[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§glocate ancientcity§r) => {
+  §cdestination §7object§e: §r{"x":1352,"y":64,"z":-1848}
+  §cfeature §7string§e: §r%feature.ancientcity
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rThe nearest Ancient City is at block 1352, (y?), -1848 (2304 blocks away)
+}
+
+21:33:21[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§glocate mineshaft§r) => {
+  §cdestination §7object§e: §r{"x":-256,"y":64,"z":16}
+  §cfeature §7string§e: §r%feature.mineshaft
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rThe nearest Mineshaft is at block -256, (y?), 16 (251 blocks away)
+}
+
+21:33:29[Scripting][warning]-Command Component Data §c[Error]§r: 
+Commands: (§glocate endcity§r) => {
+  §cstatusCode §7number§e: §r -2147352576
+  §cstatusMessage §7string§e: §r No valid structure found within a reasonable distance
+}
+
+21:33:39[Scripting][warning]-Command Component Data §c[Error]§r: 
+Commands: (§glocate biome plain§r) => {
+  §cstatusCode §7number§e: §r -2147483648
+  §cstatusMessage §7string§e: §r Syntax error: Unexpected "plain": at "ate biome >>plain<<"
+}
+
+21:33:56[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§glocate biome plains§r) => {
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rThe nearest plains is at block -101, 63, -210 (243 blocks away)
+}
+
+21:34:15[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§glocate structure mineshaft§r) => {
+  §cdestination §7object§e: §r{"x":-256,"y":64,"z":16}
+  §cfeature §7string§e: §r%feature.mineshaft
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rThe nearest Mineshaft is at block -256, (y?), 16 (251 blocks away)
+}
+
+21:34:51[Scripting][warning]-Command Component Data §c[Error]§r: 
+Commands: (§gloot give @s loot "entities/cow"§r) => {
+  §cstatusCode §7number§e: §r -2147352576
+}
+
+21:35:05[Scripting][error]-{"statusCode":-2147483648,"statusMessage":"Syntax error: Unexpected \"@s\": at \"/execute >>@s<< ~ ~ ~ loo\""}
+
+
+21:36:16[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gme Hello!§r) => {
+  §cstatusCode §7number§e: §r0
+}
+
+21:36:44[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gmsg @a Hello!§r) => {
+  §cmessage §7string§e: §rHello!
+  §crecipient §7object§e: §r["FrankyRayMS"]
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rYou whisper to FrankyRayMS: Hello!
+}
+
+21:37:11[Scripting][warning]-Command Component Data §c[Error]§r: 
+Commands: (§gop @a§r) => {
+  §cstatusCode §7number§e: §r -2147352576
+  §cstatusMessage §7string§e: §r Unknown command: op. Please check that the command exists and that you have permission to use it.
+}
+
+21:37:51[Scripting][warning]-Command Component Data §c[Error]§r: 
+Commands: (§greload§r) => {
+  §cstatusCode §7number§e: §r -2147352576
+  §cstatusMessage §7string§e: §r Unknown command: reload. Please check that the command exists and that you have permission to use it.
+}
+
+21:38:25[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gsay Hello!§r) => {
+  §cmessage §7string§e: §rHello!
+  §cstatusCode §7number§e: §r0
+}
+
+21:39:45[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gsetblock ~ ~ ~ stone§r) => {
+  §cposition §7object§e: §r{"x":-5,"y":58,"z":14}
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rBlock placed
+}
+
+21:40:35[Scripting][warning]-Command Component Data §c[Error]§r: 
+Commands: (§gsetmaxplayers 10§r) => {
+  §cstatusCode §7number§e: §r -2147352576
+  §cstatusMessage §7string§e: §r Unknown command: setmaxplayers. Please check that the command exists and that you have permission to use it.
+}
+
+21:40:48[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gsetworldspawn§r) => {
+  §cspawnPoint §7object§e: §r{"x":-5,"y":58,"z":15}
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rSet the world spawn point to (-5, 58, 15)
+}
+
+21:41:06[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gspawnpoint @s§r) => {
+  §cplayer §7object§e: §r["FrankyRayMS"]
+  §cspawnPos §7object§e: §r{"x":-5,"y":58,"z":15}
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rSet FrankyRayMS's spawn point to (-5, 58, 15)
+}
+
+21:41:36[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gspreadplayers ~ ~ 1 10 @a§r) => {
+  §ccount §7number§e: §r1
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rSuccessfully spread 1 players around -5.00,15.00
+  §cvictims §7string§e: §rFrankyRayMS
+  §cx §7number§e: §r-5
+  §cz §7number§e: §r15
+}
+
+21:42:09[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gsummon chicken§r) => {
+  §centityType §7string§e: §rminecraft:chicken
+  §cspawnPos §7object§e: §r{"x":-12.5,"y":70,"z":16.5}
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rObject successfully summoned
+  §cuId §7string§e: §r-12884901746
+  §cwasSpawned §7boolean§e: §rtrue
+}
+
+21:42:37[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gsummon cow "This is cow"§r) => {
+  §centityType §7string§e: §rminecraft:cow
+  §cspawnPos §7object§e: §r{"x":-12.5,"y":70,"z":16.5}
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rObject successfully summoned
+  §cuId §7string§e: §r-12884901745
+  §cwasSpawned §7boolean§e: §rtrue
+}
+
+21:42:58[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gtag @s add Test§r) => {
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rAdded tag 'Test' to FrankyRayMS
+}
+
+21:43:07[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gtag @s remove Test§r) => {
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rRemoved tag 'Test' from FrankyRayMS
+}
+
+21:43:17[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gtag @s list§r) => {
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rFrankyRayMS has no tags
+}
+
+21:43:22[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gtag @s add Test§r) => {
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rAdded tag 'Test' to FrankyRayMS
+}
+
+21:43:24[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gtag @s list§r) => {
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rFrankyRayMS has 1 tags: §aTest§r
+}
+
+21:43:52[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gteleport ~ ~10 ~§r) => {
+  §cdestination §7object§e: §r{"x":-12.5,"y":80,"z":16.5}
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rTeleported FrankyRayMS to -12.50, 80.00, 16.50
+  §cvictim §7object§e: §r["FrankyRayMS"]
+}
+
+21:44:10[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gtell @a Hello!§r) => {
+  §cmessage §7string§e: §rHello!
+  §crecipient §7object§e: §r["FrankyRayMS"]
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rYou whisper to FrankyRayMS: Hello!
+}
+
+21:45:09[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gtellraw @a {"rawtext": [{"text": "Hello!"}]}§r) => {
+  §crecipient §7object§e: §r["FrankyRayMS"]
+  §cstatusCode §7number§e: §r0
+}
+
+21:45:26[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gtestfor @a§r) => {
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rFound FrankyRayMS
+  §cvictim §7object§e: §r["FrankyRayMS"]
+}
+
+21:45:52[Scripting][warning]-Command Component Data §c[Error]§r: 
+Commands: (§gtestforblock ~ ~ ~ leaves 1§r) => {
+  §cmatches §7boolean§e: §r false
+  §cposition §7object§e: §r {"x":-13,"y":76,"z":16}
+  §cstatusCode §7number§e: §r -2147352576
+  §cstatusMessage §7string§e: §r The block at -13,76,16 is Air (expected: Spruce Leaves).
+}
+
+21:46:02[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gtestforblock ~ ~ ~ air§r) => {
+  §cmatches §7boolean§e: §rtrue
+  §cposition §7object§e: §r{"x":-13,"y":76,"z":16}
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rSuccessfully found the block at -13,76,16.
+}
+
+21:47:10[Scripting][warning]-Command Component Data §c[Error]§r: 
+Commands: (§gtestforblocks ~-2 ~-2 ~-2 ~2 ~2 ~2 ~ ~-1 ~ masked§r) => {
+  §cmatches §7boolean§e: §r false
+  §cstatusCode §7number§e: §r -2147352576
+  §cstatusMessage §7string§e: §r Source and destination are not identical
+}
+
+21:47:18[Scripting][warning]-Command Component Data §c[Error]§r: 
+Commands: (§gtestforblocks ~-2 ~-2 ~-2 ~2 ~2 ~2 ~ ~-1 ~ all§r) => {
+  §cmatches §7boolean§e: §r false
+  §cstatusCode §7number§e: §r -2147352576
+  §cstatusMessage §7string§e: §r Source and destination are not identical
+}
+
+21:47:30[Scripting][warning]-Command Component Data §c[Error]§r: 
+Commands: (§gtestforblocks ~-2 ~-2 ~-2 ~2 ~2 ~2 ~ ~ ~ all§r) => {
+  §cmatches §7boolean§e: §r false
+  §cstatusCode §7number§e: §r -2147352576
+  §cstatusMessage §7string§e: §r Source and destination are not identical
+}
+
+21:47:36[Scripting][warning]-Command Component Data §c[Error]§r: 
+Commands: (§gtestforblocks ~-2 ~-2 ~-2 ~2 ~2 ~2 ~ ~ ~ masked§r) => {
+  §cmatches §7boolean§e: §r false
+  §cstatusCode §7number§e: §r -2147352576
+  §cstatusMessage §7string§e: §r Source and destination are not identical
+}
+
+21:47:45[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gtestforblocks ~-2 ~-2 ~-2 ~2 ~2 ~2 ~ ~ ~ masked§r) => {
+  §ccompareCount §7number§e: §r0
+  §cmatches §7boolean§e: §rtrue
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §r0 blocks compared
+}
+
+21:47:52[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gtestforblocks ~-2 ~-2 ~-2 ~2 ~2 ~2 ~ ~ ~ all§r) => {
+  §ccompareCount §7number§e: §r125
+  §cmatches §7boolean§e: §rtrue
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §r125 blocks compared
+}
+
+21:48:29[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gtime set sunset§r) => {
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rSet the time to 36000
+  §ctime §7number§e: §r36000
+}
+
+21:48:43[Scripting][warning]-Command Component Data §c[Error]§r: 
+Commands: (§gtime query§r) => {
+  §cstatusCode §7number§e: §r -2147483648
+  §cstatusMessage §7string§e: §r Syntax error: Unexpected "": at "time query>><<"
+}
+
+21:49:03[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gtime query day§r) => {
+  §cbody §7string§e: §rDay is 1
+  §cdata §7number§e: §r1
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rDay is 1
+}
+
+21:49:09[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gtime query daytime§r) => {
+  §cbody §7string§e: §rDaytime is 12000
+  §cdata §7number§e: §r12000
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rDaytime is 12000
+}
+
+21:49:16[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gtime query gametime§r) => {
+  §cbody §7string§e: §rGametime is 58616
+  §cdata §7number§e: §r58616
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rGametime is 58616
+}
+
+21:49:41[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gtitle @s title Hello!§r) => {
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rTitle command successfully executed
+}
+
+21:50:25[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gtitle @a times 1 10 1§r) => {
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rTitle command successfully executed
+}
+
+21:51:10[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gtitleraw @a title {"rawtext": [{"text": "Hello!"}]}§r) => {
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rTitleraw command successfully executed
+}
+
+21:51:27[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gtoggledownfall§r) => {
+  §crainLevel §7number§e: §r100
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rToggled downfall
+}
+
+21:52:04[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gw @a Hello!§r) => {
+  §cmessage §7string§e: §rHello!
+  §crecipient §7object§e: §r["FrankyRayMS"]
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rYou whisper to FrankyRayMS: Hello!
+}
+
+21:52:20[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gweather clear§r) => {
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rChanging to clear weather
+}
+
+21:52:27[Scripting][warning]-Command Component Data §a[Success]§r: 
+Commands: (§gweather query§r) => {
+  §cdata §7number§e: §r0
+  §cstatusCode §7number§e: §r0
+  §cstatusMessage §7string§e: §rWeather state is: clear
+}
+
+21:52:39[Scripting][warning]-Command Component Data §a[S

@@ -1,0 +1,20 @@
+{
+  "editor.insertSpaces": true,
+  "editor.tabSize": 2,
+  "editor.detectIndentation": true,
+  "python.linting.enabled": true,
+  "[python]": {
+    "editor.tabSize": 4,
+    "gitlens.codeLens.symbolScopes": [
+      "!Module"
+    ],
+    "editor.wordBasedSuggestions": false
+  },
+  "[javascript]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[markdown]": {
+    "editor.tabSize": 4,
+  }
+}
