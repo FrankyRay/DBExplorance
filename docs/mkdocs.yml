@@ -2,6 +2,7 @@ site_name: FrankyRayMS's Personal Addon BP Docs
 site_url: https://example.com/
 
 nav:
+  - index.md
   - Scripts:
     - Command Component: "scripts/commandcomp.md"
 
