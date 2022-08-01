@@ -1,12 +1,17 @@
 site_name: FrankyRayMS's Personal Addon BP Docs
 site_url: https://example.com/
 
+repo_name: FrankyRay/DBExplorance
+repo_url: https://github.com/FrankyRay/DBExplorance
+
 nav:
   - index.md
   - Scripts:
     - Command Component: "scripts/commandcomp.md"
 
 theme:
+  icon:
+    repo: fontawesome/brands/git-alt 
   name: material
   features:
     - navigation.tabs
@@ -30,6 +35,8 @@ theme:
 markdown_extensions:
   - admonition
   - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true 
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.inlinehilite

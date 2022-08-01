@@ -521,6 +521,10 @@ Show help (Command)
 
 ## Immutableworld
 
+??? note
+
+    Command `/immutableworld` accessible with `Education Edition` toggle enabled
+
 !!! warning ""
 
     No documentation yet!
@@ -630,15 +634,6 @@ Locating biome
 !!! info ""
 
     Similar command: `/tell` and `/w`
-
-```json title="Command: /msg Hello!"
-{
-    "message": "Hello!",
-    "recipient": ["FrankyRayMS"],
-    "statusCode": 0,
-    "statusMessage": "You whisper to FrankyRayMS: Hello!"
-}
-```
 
 ## Music
 
@@ -804,3 +799,286 @@ Successfully set block
 !!! warning ""
 
     No documentation yet!
+
+## Summon
+
+Successfully spawn entity
+```json title="Command: /summon shicken"
+{
+    "entityType": "minecraft:chicken",
+    "spawnPos": {
+        "x": -12.5,
+        "y": 70,
+        "z": 16.5
+    },
+    "statusCode": 0,
+    "statusMessage": "Object successfully summoned",
+    "uID": "-12884901746",
+    "wasSpawned": true
+}
+```
+
+## Tag
+
+Successfully add tag
+```json title="Command: /tag @s add Test"
+{
+    "statusCode": 0,
+    "statusMessage": "Added tag 'Test' to FrankyRayMS"
+}
+```
+
+Successfully remove tag
+```json title="Command: /tag @s remove Test"
+{
+    "statusCode": 0,
+    "statusMessage": "Removed tag 'Test' from FrankyRayMS"
+}
+```
+
+Show player's tags list
+```json title="Command: /tag @s list"
+{
+    "statusCode": 0,
+    "statusMessage": "FrankyRayMS has 1 tags: §aTest§r"
+}
+```
+
+## Teleport
+
+!!! info ""
+
+    Similar command: `/tp`
+
+Successfully teleport to other location
+```json title="Command: /teleport 0 4 0"
+{
+    "destination": {
+        "x": 0.5,
+        "y": 4,
+        "z": 0.5
+    },
+    "statusCode": 0,
+    "statusMessage": "Teleported FrankyRayMS to 0.50, 4.00, 0.50",
+    "victim": ["FrankyRayMS"]
+}
+```
+
+## Tell
+
+!!! info ""
+
+    Similar command: `/msg` and `/w`
+
+Send a message
+```json title="Command: /tell @a Hello!"
+{
+    "message": "Hello!",
+    "recipient": ["FrankyRayMS"],
+    "statusCode": 0,
+    "statusMessage": "You whisper to FrankyRayMS: Hello!"
+}
+```
+
+## Tellraw
+
+Command:  
+`/tellraw @a {"rawtext": [{"text": "Hello!"}]}`
+```json
+{
+    "recipient": ["FrankyRayMS"],
+    "statusCode": 0
+}
+```
+
+## Testfor
+
+```json
+{
+    "statusCode": 0,
+    "statusMessage": "Found FrankyRayMS",
+    "victim": ["FrankyRayMS"]
+}
+```
+
+## Testforblock
+
+Success to test  
+Command: `/testforblock ~ ~ ~ air`
+```json
+{
+    "matches": true,
+    "position": {
+        "x": -13,
+        "y": 76,
+        "z": 16
+    },
+    "statusCode": 0,
+    "statusMessage": "Successfully found the block at -13,76,16." 
+}
+```
+
+Fail to test [Error]  
+Command: `/testforblock ~ ~ ~ leaves`
+```json
+{
+    "matches": false,
+    "position": {
+        "x": -13,
+        "y": 76,
+        "z": 16
+    },
+    "statusCode": -2147352576,
+    "statusMessage": "The block at -13,76,16 is Air (expected: Spruce Leaves)." 
+}
+```
+
+## Testforblocks
+
+Success to test  
+Command: `/testforblocks ~-2 ~-2 ~-2 ~2 ~2 ~2 ~ ~ ~`
+```json
+{
+    "compareCount": 125,
+    "matches": true,
+    "statusCode": 0,
+    "statusMessage": "125 blocks compared"
+}
+```
+
+Fail to test [Error]  
+Command: `/testforblocks ~-2 ~-2 ~-2 ~2 ~2 ~2 ~ ~-5 ~`
+```json
+{
+    "matches": false,
+    "statusCode": -2147352576,
+    "statusMessage": "Source and destination are not identical"
+}
+```
+
+## Time
+
+Set the time
+```json title="Command: /time set sunset"
+{
+    "statusCode": 0,
+    "statusMessage": "Set the time to 36000",
+    "time: 36000"
+}
+```
+
+Time query
+
+=== "Day"
+
+    ```json title="Command: /time query day"
+    {
+        "body": "Day is 1",
+        "data": 1,
+        "statusCode": 0,
+        "statusMessage": "Day is 1"
+    }
+    ```
+
+=== "Daytime"
+
+    ```json title="Command: /time query daytime"
+    {
+        "body": "Daytime is 12000",
+        "data": 12000,
+        "statusCode": 0,
+        "statusMessage": "Daytime is 12000"
+    }
+    ```
+
+=== "Gametime"
+
+    ```json title="Command: /time query gametime"
+    {
+        "body": "Gametime is 58616",
+        "data": 58616,
+        "statusCode": 0,
+        "statusMessage": "Gametime is 58616"
+    }
+    ```
+
+## Title
+
+```json title="Command: /title @a title Hello!"
+{
+    "statusCode": 0,
+    "statusMessage": "Title command successfully executed"
+}
+```
+
+## Titleraw
+
+Command:  
+`titleraw @a title {"rawtext": [{"text": "Hello!"}]}`
+```json
+{
+    "statusCode": 0,
+    "statusMessage": "Titleraw command successfully executed"
+}
+```
+
+## Toggledownfall
+
+```json
+{
+    "rainLevel": 100,
+    "statusCode": 0,
+    "statusMessage": "Toggled downfall"
+}
+```
+
+## TP
+
+!!! info ""
+
+    Similar command: `/teleport`
+
+## Volumearea
+
+!!! warning ""
+
+    No documentation yet!
+
+## W
+
+!!! info ""
+
+    Similar command: `/msg` and `/tell`
+
+## WB
+
+!!! info ""
+
+    Similar command: `/worldbuilder`
+
+## Weather
+
+Change the weather
+```json title="Command: /weather clear"
+{
+    "statusCode": 0,
+    "statuseMessage": "Changing to clear weather"
+}
+```
+
+Weather query
+```json title="Command: /weather query"
+{
+    "data": 0,
+    "statusCode": 0,
+    "statusMessage": "Weather state is: clear"
+}
+```
+
+List of `"data"` value and its weather state
+```yaml
+data:
+  0: clear
+  1: rain
+  2: thunder
+```
