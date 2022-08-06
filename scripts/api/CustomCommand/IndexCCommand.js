@@ -56,9 +56,11 @@ function CustomCommand(command, args, player) {
       Math(args, player);
       break;
 
-    case "tells":
+    case "rawtext":
+      let optsRawtext = args.split(" ")[0];
+      let text = args.substring(args.indexOf(" ") + 1);
       let regexRawtext = /(\<@\w(?:\[.*?\])?(?:\|\w+)?\>)/g;
-      let messagePiece = args.split(regexRawtext);
+      let messagePiece = text.split(regexRawtext);
       // console.warn(JSON.stringify(messagePiece));
 
       let rawtext = [];
@@ -73,9 +75,12 @@ function CustomCommand(command, args, player) {
         }
       }
 
-      let cmd = `tellraw @a {"rawtext": ${JSON.stringify(rawtext)}}`;
-      // console.warn(cmd);
-      player.runCommand(cmd);
+      let objRawtext = `{"rawtext": ${JSON.stringify(rawtext)}}`;
+      if (optsRawtext == "tell") {
+        player.runCommand(`tellraw @a ${objRawtext}`);
+      } else {
+        player.runCommand(`titleraw @a ${optsRawtext} ${objRawtext}`);
+      }
       break;
 
     // Error message when no command available
