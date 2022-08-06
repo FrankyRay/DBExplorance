@@ -7,31 +7,45 @@ import { world } from "mojang-minecraft";
  * @param {string} commands Command string
  */
 export default function CmdComp(player, commands) {
-  if (commands.startsWith("/")) commands = commands.replace("/", "");
+  if (commands.startsWith("/")) commands = commands.substring(1);
 
   let comp = "";
   let error = false;
   try {
     let commandData = player.runCommand(commands);
     Object.keys(commandData).forEach((key) => {
-      comp += `\n  §c${key} §7${typeof commandData[key]}§e: §r${
-        typeof commandData[key] === "object"
-          ? JSON.stringify(commandData[key])
-          : commandData[key]
-      }`;
+      let value = commandData[key];
+      switch (typeof value) {
+        case "object":
+          value = JSON.stringify(value).replace("\n", "\\n");
+          break;
+
+        case "string":
+          value = `"${value}"`;
+          break;
+      }
+
+      comp += `\n  "${key}": ${value}`;
     });
   } catch (err) {
     error = true;
     let commandDataErr = JSON.parse(err);
     Object.keys(commandDataErr).forEach((key) => {
-      comp += `\n  §c${key} §7${typeof commandDataErr[key]}§e: §r ${
-        typeof commandDataErr[key] === "object"
-          ? JSON.stringify(commandDataErr[key])
-          : commandDataErr[key]
-      }`;
+      let value = commandDataErr[key];
+      switch (typeof value) {
+        case "object":
+          value = JSON.stringify(value).replace("\n", "\\n");
+          break;
+
+        case "string":
+          value = `"${value}"`;
+          break;
+      }
+
+      comp += `\n  "${key}": ${value}`;
     });
   }
 
-  let status = !error ? "§a[Success]§r" : "§c[Error]§r";
-  return `Command Component Data ${status}: \nCommands: (§g${commands}§r) => {${comp}\n}`;
+  let status = !error ? "[Success]" : "[Error]";
+  return `Command Component Data ${status}: \nCommands: (${commands}) => {${comp}\n}`;
 }

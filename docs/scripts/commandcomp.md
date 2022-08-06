@@ -29,7 +29,7 @@ Every command will return `statusCode` and `statusMessage` with additional prope
 
     Unexecutable command will throw error to the content log containing stringify object of command error property. Use try catch to take the data.
 
-    This document will show you which command will throw error with [Error] code
+    This document will show you which command will throw error with `[Error]` code
 
 ## Ability
 
@@ -111,7 +111,7 @@ Clear player's inventory when there's any item
 }
 ```
 
-Clear player's inventory when no item [Error]
+Clear player's inventory when no item `[Error]`
 ```json title="Command: /clear"
 {
     "itemsRemoved": ["0"],
@@ -141,7 +141,7 @@ Successfully clone the area
 }
 ```
 
-No block cloned [Error]
+No block cloned `[Error]`
 ```json
 {
     "statusCode": -2147352576,
@@ -149,7 +149,7 @@ No block cloned [Error]
 }
 ```
 
-Source and destination area are overlap (without `filtered force`) [Error]
+Source and destination area are overlap (without `filtered force`) `[Error]`
 ```json title="Command: /clone 0 0 0 0 3 0 0 2 0"
 {
     "statusCode": -2147352576,
@@ -157,7 +157,7 @@ Source and destination area are overlap (without `filtered force`) [Error]
 }
 ```
 
-Trying accessing block outside world [Error]
+Trying accessing block outside world `[Error]`
 ```json title="Command: /clone 0 -1 0 0 3 0 0 10 0"
 {
     "statusCode": -2147352576,
@@ -209,7 +209,7 @@ Successfully damage the target
 }
 ```
 
-Cannot damage the target [Error]
+Cannot damage the target `[Error]`
 ```json title="Command: /damage @s 1 fall [Creative]"
 {
     "statusCode": 0,
@@ -218,7 +218,7 @@ Cannot damage the target [Error]
 }
 ```
 
-Too many damage sources [Error]
+Too many damage sources `[Error]`
 ```json title="Command: /damage @s 1 entity_attack entity @e"
 {
     "statusCode": -214735276,
@@ -311,7 +311,7 @@ Clears all effect from target
 }
 ```
 
-Clears no effect on the target [Error]
+Clears no effect on the target `[Error]`
 ```json title="Command: /effect @s clear"
 {
     "player": ["FrankyRayMS"],
@@ -331,7 +331,7 @@ Successfully enchant an item
 }
 ```
 
-Combining incompatible enchantment [Error]
+Combining incompatible enchantment `[Error]`
 ```json title="Command: /enchant @s smite 5"
 {
     "playerNames": ["FrankyRayMS"],
@@ -340,7 +340,7 @@ Combining incompatible enchantment [Error]
 }
 ```
 
-Too high enchantment's level [Error]
+Too high enchantment's level `[Error]`
 ```json title="Command: /enchant @s sharpness 10"
 {
     "statusCode": 0,
@@ -348,7 +348,7 @@ Too high enchantment's level [Error]
 }
 ```
 
-Add enchantment into incompatible item [Error]
+Add enchantment into incompatible item `[Error]`
 ```json title="Command: /enchant @s fortune 1"
 {
     "playerNames": ["FrankyRayMS"],
@@ -357,7 +357,7 @@ Add enchantment into incompatible item [Error]
 }
 ```
 
-Player didn't hold any item [Error]
+Player didn't hold any item `[Error]`
 ```json
 {
     "playerNames": ["FrankyRayMS"],
@@ -394,7 +394,7 @@ Successfully fill the area
 }
 ```
 
-Fill 0 blocks [Error]
+Fill 0 blocks `[Error]`
 ```json title="Command: /fill 0 0 0 0 0 0 wool 10 replace wool 0"
 {
     "blockName": "Purple Wool",
@@ -404,7 +404,7 @@ Fill 0 blocks [Error]
 }
 ```
 
-Place blocks outside of the world [Error]
+Place blocks outside of the world `[Error]`
 ```json title="Command: /fill 0 -1 0 0 0 0 wool 10"
 {
     "statusCode": -2147352576,
@@ -412,7 +412,7 @@ Place blocks outside of the world [Error]
 }
 ```
 
-Too many blocks to fill [Error]
+Too many blocks to fill `[Error]`
 
 ```json title="Command: /fill 0 0 0 50 50 50 wool 10"
 {
@@ -531,7 +531,7 @@ Show help (Command)
 
 ## Kick
 
-Trying to kick operator/admin of the world [Error]
+Trying to kick operator/admin of the world `[Error]`
 ```json title="Command: /kick FrankyRayMS"
 {
     "statusCode": -2147352576,
@@ -554,7 +554,7 @@ Successfully kill the target
 }
 ```
 
-Cannot kill the target/no unkillable target [Error]
+Cannot kill the target/no unkillable target `[Error]`
 ```json title="Command: /kill @s"
 {
     "statusCode": -2147352576,
@@ -918,7 +918,7 @@ Command: `/testforblock ~ ~ ~ air`
 }
 ```
 
-Fail to test [Error]  
+Fail to test `[Error]`  
 Command: `/testforblock ~ ~ ~ leaves`
 ```json
 {
@@ -946,7 +946,7 @@ Command: `/testforblocks ~-2 ~-2 ~-2 ~2 ~2 ~2 ~ ~ ~`
 }
 ```
 
-Fail to test [Error]  
+Fail to test `[Error]`  
 Command: `/testforblocks ~-2 ~-2 ~-2 ~2 ~2 ~2 ~ ~-5 ~`
 ```json
 {
@@ -1081,4 +1081,36 @@ data:
   0: clear
   1: rain
   2: thunder
+```
+
+## XP
+
+Successfully add/remove XP level
+```json title="Command: /xp -10L @s"
+{
+    "amount": -10,
+    "level": 3, 
+    "player": ["FrankyRayMS"],
+    "statusCode": 0,
+    "statusMessage": "Taken 10 levels from FrankyRayMS"
+}
+```
+
+Successfully add XP point
+```json title="Command: /xp 10 @s"
+{
+    "amount": 10,
+    "level": 3,
+    "player": ["FrankyRayMS"],
+    "statusCode": 0,
+    "statusMessage": "Gave 10 experience to FrankyRayMS"
+}
+```
+
+Trying to give negative XP point `[Error]`
+```json title="Command: /xp -10 @s"
+{
+    "statusCode": 0,
+    "statusMessage": "Cannot give player negative experience points"
+}
 ```

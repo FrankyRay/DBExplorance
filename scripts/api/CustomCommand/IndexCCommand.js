@@ -45,18 +45,31 @@ function CustomCommand(command, args, player) {
       console.warn(CmdComp(player, args));
       break;
 
-    case "cmdcompsl":
-      if (args.startsWith("/")) args = args.replace("/", "");
-      let cmdcomp = player.runCommand(args);
-      console.warn(JSON.stringify(cmdcomp));
-      break;
-
     case "itemgive":
       ItemGive(player, args);
       break;
 
     case "math":
       Math(args, player);
+      break;
+
+    case "tells":
+      let regexRawtext = /(\<@\w(?:\[.*?\])?(?:\|\w+)\>)/g;
+      let messagePiece = args.split(regexRawtext);
+
+      let rawtext = [];
+      for (let msg in messagePiece) {
+        if (!messagePiece[msg].startsWith("<")) {
+          rawtext.push({ text: messagePiece[msg] });
+        } else if (!messagePiece.includes("|")) {
+          rawtext.push({ selector: messagePiece[msg] });
+        } else {
+          let [target, obj] = messagePiece[msg].split("|");
+          rawtext.push({ score: { name: target, objective: obj } });
+        }
+      }
+
+      player.runCommand(`tellraw @a {"rawtext": ${JSON.stringify(rawtext)}}`);
       break;
 
     // Error message when no command available
