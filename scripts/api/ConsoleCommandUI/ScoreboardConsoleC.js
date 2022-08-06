@@ -4,7 +4,7 @@ import {
   MessageFormData,
   ModalFormData,
 } from "mojang-minecraft-ui";
-import { Print } from "../lib/MinecraftFunctions.js";
+import Print from "../../lib/Print";
 
 // Scoreboard Objectives Commands
 export function ScoreboardObjectivesIndex(player) {

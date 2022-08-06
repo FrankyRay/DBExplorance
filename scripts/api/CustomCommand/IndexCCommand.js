@@ -22,7 +22,10 @@ function CustomCommand(command, args, player) {
   switch (command) {
     // Help commands
     case "help":
-      Print("This is help command!", player.name);
+      Print(
+        "This is help command! (I'm lazy to give some desc to my help command)",
+        player.name
+      );
       break;
 
     // Testing some features with custom commands
@@ -54,22 +57,25 @@ function CustomCommand(command, args, player) {
       break;
 
     case "tells":
-      let regexRawtext = /(\<@\w(?:\[.*?\])?(?:\|\w+)\>)/g;
+      let regexRawtext = /(\<@\w(?:\[.*?\])?(?:\|\w+)?\>)/g;
       let messagePiece = args.split(regexRawtext);
+      // console.warn(JSON.stringify(messagePiece));
 
       let rawtext = [];
       for (let msg in messagePiece) {
         if (!messagePiece[msg].startsWith("<")) {
           rawtext.push({ text: messagePiece[msg] });
-        } else if (!messagePiece.includes("|")) {
-          rawtext.push({ selector: messagePiece[msg] });
+        } else if (messagePiece[msg].indexOf("|") < 0) {
+          rawtext.push({ selector: messagePiece[msg].replace(/[><]/g, "") });
         } else {
-          let [target, obj] = messagePiece[msg].split("|");
+          let [target, obj] = messagePiece[msg].replace(/[><]/g, "").split("|");
           rawtext.push({ score: { name: target, objective: obj } });
         }
       }
 
-      player.runCommand(`tellraw @a {"rawtext": ${JSON.stringify(rawtext)}}`);
+      let cmd = `tellraw @a {"rawtext": ${JSON.stringify(rawtext)}}`;
+      // console.warn(cmd);
+      player.runCommand(cmd);
       break;
 
     // Error message when no command available
