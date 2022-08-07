@@ -266,9 +266,14 @@ Too many damage sources `[Error]`
 
 ## Dialogue
 
-!!! warning ""
-
-    No documentation yet!
+Successfully open the dialogue
+```json title="Command: /dialogue open @e[type=npc,c=1] @s exp.give"
+{
+  "playerNames": ["FrankyRayMS"],
+  "statusCode": 0,
+  "statusMessage": "Dialogue sent to FrankyRayMS."
+}
+```
 
 ## Difficulty
 

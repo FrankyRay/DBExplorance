@@ -1,0 +1,38 @@
+{
+  "format_version": "1.17",
+  "minecraft:npc_dialogue": {
+    "scenes": [
+      {
+        "scene_tag": "exp.give",
+        "npc_name": "NPC Give",
+        "text": "Hello! I was from addon! I will give you apple when you open my dialogue and give book after you close my dialogue",
+        "on_open_commands": [
+          "give @initiator apple"
+        ],
+        "on_close_commands": [
+          "give @initiator book"
+        ],
+        "buttons": [
+          {
+            "name": "Stick",
+            "commands": [
+              "give @initiator stick"
+            ]
+          },
+          {
+            "name": "Iron Ingot",
+            "commands": [
+              "give @initiator iron_ingot"
+            ]
+          },
+          {
+            "name": "Diamond",
+            "commands": [
+              "give @initiator diamond"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
