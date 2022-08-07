@@ -8,6 +8,7 @@ nav:
   - index.md
   - Scripts:
     - Command Component: "scripts/commandcomp.md"
+    - Event: "scripts/events.md"
 
 theme:
   icon:

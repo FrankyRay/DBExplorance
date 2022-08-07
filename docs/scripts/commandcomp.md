@@ -71,7 +71,7 @@ Check specific player's ability
 
 !!! info ""
 
-    Similar command: `/daylock`
+    Similar command: [`/daylock`](#daylock)
 
 ```json title="Command: /alwaysday true"
 {
@@ -243,7 +243,7 @@ Too many damage sources `[Error]`
 
 !!! info ""
 
-    Similar command: `/alwaysday`
+    Similar command: [`/alwaysday`](#alwaysday)
 
 ```json title="Command: /daylock true"
 {
@@ -633,7 +633,8 @@ Locating biome
 
 !!! info ""
 
-    Similar command: `/tell` and `/w`
+    Similar command: `/tell` and `/w`  
+    Full documentation on [`/tell`](#tell)
 
 ## Music
 
@@ -1036,7 +1037,7 @@ Command:
 
 !!! info ""
 
-    Similar command: `/teleport`
+    Similar command: [`/teleport`](#teleport)
 
 ## Volumearea
 
@@ -1048,7 +1049,8 @@ Command:
 
 !!! info ""
 
-    Similar command: `/msg` and `/tell`
+    Similar command: `/msg` and `/tell`  
+    Full documentation on [`/tell`](#tell)
 
 ## WB
 
