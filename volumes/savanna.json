@@ -1,0 +1,18 @@
+{
+    "format_version": "1.17.0",
+    "minecraft:volume": {
+      "description": {
+        "identifier": "exp:soulsand_valley"
+      },
+      "components": {
+        "minecraft:bounds": {
+          "min": [-50, 0, -50],
+          "max": [50, 256, 50]
+        },
+        "minecraft:fog": {
+          "fog_identifier": "minecraft:fog_soulsand_valley",
+          "priority": 1
+        }
+      }
+    }
+  }
