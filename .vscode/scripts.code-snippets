@@ -44,5 +44,10 @@
 		"prefix": "&errcode",
 		"body": "-2147352576",
 		"description": "Status Error Code"
+	},
+	"Rawtext Text": {
+		"scope": "javascript, typescript",
+		"prefix": "&rawtext",
+		"body": "{\"rawtext\": [{\"text\": \"$0\"}]}"
 	}
 }

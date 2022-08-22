@@ -1,9 +1,12 @@
 // @ts-check
 import { Items, ItemStack, world } from "mojang-minecraft";
+import { ModalFormData } from "mojang-minecraft-ui";
+import CancelReason from "../../lib/CancelationReason.js";
 import Print from "../../lib/Print.js";
+import setTickTimeout from "../../lib/TickTimeout.js";
+// Command File Extended
 import CmdComp from "./CmdComponent.js";
 import ItemGive from "./ItemGive.js";
-// Command File Extended
 import Math from "./Math.js";
 
 // Prefix command
@@ -30,9 +33,18 @@ function CustomCommand(command, args, player) {
 
     // Testing some features with custom commands
     case "test":
-      player.runCommand(
-        'execute as @s run loot give @s loot "test/custom_sword"'
-      );
+      const form = new ModalFormData()
+        .title("Test Form")
+        .textField("Text Field", "Placeholder");
+
+      form.show(player).then((response) => {
+        // @ts-ignore
+        if (response.canceled)
+          // @ts-ignore
+          return console.warn(CancelReason(response.cancelationReason));
+
+        console.log(response.formValues[0]);
+      });
       // Print("There is no test for now!", player.name);
       break;
 
@@ -42,6 +54,12 @@ function CustomCommand(command, args, player) {
 
       // @ts-ignore
       player.getComponent("inventory").container.addItem(conscItem);
+      break;
+
+    case "console":
+      console.log("Console Log");
+      console.warn("Console Warn");
+      console.error("Console Error");
       break;
 
     case "cmdcomp":
@@ -54,6 +72,14 @@ function CustomCommand(command, args, player) {
 
     case "math":
       Math(args, player);
+      break;
+
+    case "msgdelay":
+      let delay = args.split(" ")[0];
+      let message = args.substring(args.indexOf(" ") + 1);
+      setTickTimeout(() => {
+        Print(message);
+      }, parseInt(delay));
       break;
 
     case "rawtext":

@@ -9,10 +9,8 @@ import { world } from "mojang-minecraft";
  * @param {string|null} prefix Prefix message.
  *
  * @example
- * ```js
  * let message = "This is my message"
  * Print(message, "Player Name")
- * ```
  */
 export default function Print(message, target = "@a", prefix = null) {
   // If target is player name and has space on it, add quote around it
