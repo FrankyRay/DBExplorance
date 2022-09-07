@@ -8,6 +8,7 @@ import setTickTimeout from "../../lib/TickTimeout.js";
 import CmdComp from "./CmdComponent.js";
 import ItemGive from "./ItemGive.js";
 import Math from "./Math.js";
+import Rawtext from "./Rawtext.js";
 
 // Prefix command
 const prefix = "\\";
@@ -66,7 +67,7 @@ function CustomCommand(command, args, player) {
       console.warn(CmdComp(player, args));
       break;
 
-    case "itemgive":
+    case "give":
       ItemGive(player, args);
       break;
 
@@ -83,30 +84,7 @@ function CustomCommand(command, args, player) {
       break;
 
     case "rawtext":
-      let optsRawtext = args.split(" ")[0];
-      let text = args.substring(args.indexOf(" ") + 1);
-      let regexRawtext = /(\<@\w(?:\[.*?\])?(?:\|\w+)?\>)/g;
-      let messagePiece = text.split(regexRawtext);
-      // console.warn(JSON.stringify(messagePiece));
-
-      let rawtext = [];
-      for (let msg in messagePiece) {
-        if (!messagePiece[msg].startsWith("<")) {
-          rawtext.push({ text: messagePiece[msg] });
-        } else if (messagePiece[msg].indexOf("|") < 0) {
-          rawtext.push({ selector: messagePiece[msg].replace(/[><]/g, "") });
-        } else {
-          let [target, obj] = messagePiece[msg].replace(/[><]/g, "").split("|");
-          rawtext.push({ score: { name: target, objective: obj } });
-        }
-      }
-
-      let objRawtext = `{"rawtext": ${JSON.stringify(rawtext)}}`;
-      if (optsRawtext == "tell") {
-        player.runCommand(`tellraw @a ${objRawtext}`);
-      } else {
-        player.runCommand(`titleraw @a ${optsRawtext} ${objRawtext}`);
-      }
+      Rawtext(player, args);
       break;
 
     // Error message when no command available
