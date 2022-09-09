@@ -16,6 +16,10 @@ export default function Print(message, target = "@a", prefix = null) {
   // If target is player name and has space on it, add quote around it
   if (target.includes(" ") || !target.startsWith("@")) target = `"${target}"`;
 
+  // Double quotes safety
+  // @ts-ignore
+  message = message.replaceAll('"', '\\"');
+
   // Send prefix for the messages
   // Example: [Info] <Message>
   if (prefix != null) {

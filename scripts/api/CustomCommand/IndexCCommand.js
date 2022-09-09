@@ -6,6 +6,7 @@ import Print from "../../lib/Print.js";
 import setTickTimeout from "../../lib/TickTimeout.js";
 // Command File Extended
 import CmdComp from "./CmdComponent.js";
+import FunctionCommand from "./Functions.js";
 import ItemGive from "./ItemGive.js";
 import Math from "./Math.js";
 import Rawtext from "./Rawtext.js";
@@ -34,18 +35,7 @@ function CustomCommand(command, args, player) {
 
     // Testing some features with custom commands
     case "test":
-      const form = new ModalFormData()
-        .title("Test Form")
-        .textField("Text Field", "Placeholder");
-
-      form.show(player).then((response) => {
-        // @ts-ignore
-        if (response.canceled)
-          // @ts-ignore
-          return console.warn(CancelReason(response.cancelationReason));
-
-        console.log(response.formValues[0]);
-      });
+      player.addTag('"[This Is A Test Tag]"');
       // Print("There is no test for now!", player.name);
       break;
 
@@ -65,6 +55,10 @@ function CustomCommand(command, args, player) {
 
     case "cmdcomp":
       console.warn(CmdComp(player, args));
+      break;
+
+    case "function":
+      FunctionCommand(player, args);
       break;
 
     case "give":

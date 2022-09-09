@@ -1,11 +1,13 @@
-import { world } from "mojang-minecraft";
+import { BlockRaycastOptions, world } from "mojang-minecraft";
 import { ModalFormData } from "mojang-minecraft-ui";
 import Print from "../lib/Print";
 
 world.events.beforeItemUseOn.subscribe((eventItem) => {
-  const { blockLocation, item, source } = eventItem;
-  const block = source.dimension.getBlock(blockLocation);
+  const { item, source } = eventItem;
+  const blockRayOpt = new BlockRaycastOptions();
+  blockRayOpt.maxDistance = 10;
 
+  const block = source.getBlockFromViewVector(blockRayOpt);
   if (
     item.id == "minecraft:book" &&
     item.getLore().includes("§r§g[Change Permutation UI]")
@@ -48,6 +50,7 @@ function changePermutationBlock(player, block) {
     }
 
     permutationForm.show(player).then((response) => {
+      if (response.isCanceled || response.canceled) return;
       for (let propertyIndex in properties) {
         let { name, validValues, value } = properties[propertyIndex];
 
