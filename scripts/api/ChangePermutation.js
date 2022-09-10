@@ -4,7 +4,6 @@ import Print from "../lib/Print";
 
 world.events.beforeItemUseOn.subscribe((eventItem) => {
   const { item, source, blockLocation, cancel } = eventItem;
-  eventItem.cancel = true;
   // const blockRayOpt = new BlockRaycastOptions();
   // blockRayOpt.maxDistance = 10;
 
@@ -15,6 +14,7 @@ world.events.beforeItemUseOn.subscribe((eventItem) => {
     item.getLore().includes("§r§g[Change Permutation UI]")
   ) {
     changePermutationBlock(source, block);
+    eventItem.cancel = true;
   }
 });
 
