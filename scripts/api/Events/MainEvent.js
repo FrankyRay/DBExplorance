@@ -311,7 +311,7 @@ function eventWeatherChange() {
 // eventEntityCreate();
 // eventEntityHit();
 // eventExplosion();
-// eventItemUse();
+eventItemUse();
 // eventItemUseOn();
 // eventPistonActivate();
 // eventWeatherChange();
