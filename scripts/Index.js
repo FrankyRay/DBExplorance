@@ -4,3 +4,5 @@ import "./api/Events/MainEvent";
 import "./api/Watchdog";
 import "./api/InfoTick/MainTick";
 import "./api/ChangePermutation";
+// import "./extension/Entity";
+import "./api/EntityComponent";

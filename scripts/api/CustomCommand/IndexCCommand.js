@@ -35,8 +35,7 @@ function CustomCommand(command, args, player) {
 
     // Testing some features with custom commands
     case "test":
-      player.addTag('"[This Is A Test Tag]"');
-      // Print("There is no test for now!", player.name);
+      Print("There is no test for now!", player.name);
       break;
 
     case "consc":
