@@ -7,7 +7,7 @@ import setTickTimeout from "../../lib/TickTimeout.js";
 // Command File Extended
 import CmdComp from "./CmdComponent.js";
 import FunctionCommand from "./Functions.js";
-import ItemGive from "./ItemGive.js";
+import Item from "./BetterCommand/Item";
 import Math from "./Math.js";
 import Rawtext from "./Rawtext.js";
 
@@ -60,8 +60,8 @@ function CustomCommand(command, args, player) {
       FunctionCommand(player, args);
       break;
 
-    case "give":
-      ItemGive(player, args);
+    case "item":
+      Item(player, args);
       break;
 
     case "math":

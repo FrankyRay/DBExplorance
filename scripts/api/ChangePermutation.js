@@ -24,7 +24,6 @@ world.events.beforeItemUseOn.subscribe((eventItem) => {
  * @param {import("mojang-minecraft").Block} block Block
  */
 function changePermutationBlock(player, block) {
-  console.log("Start");
   const permutationForm = new ModalFormData().title(
     `Permutation [${block.id}]`
   );
@@ -53,11 +52,8 @@ function changePermutationBlock(player, block) {
         break;
     }
   }
-
-  console.log("Showing");
   permutationForm.show(player).then((response) => {
     if (response.isCanceled || response.canceled) return;
-    console.log("Setting");
     for (let propertyIndex in properties) {
       let { name, validValues, value } = properties[propertyIndex];
 
@@ -74,6 +70,5 @@ function changePermutationBlock(player, block) {
     }
 
     block.setPermutation(permutate);
-    console.log("Done");
   });
 }
