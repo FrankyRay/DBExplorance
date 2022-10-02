@@ -49,5 +49,16 @@
 		"scope": "javascript, typescript",
 		"prefix": "&rawtext",
 		"body": "{\"rawtext\": [{\"text\": \"$0\"}]}"
+	},
+	"Add Custom Command": {
+		"scope": "javascript, typescript",
+		"prefix": "&addcommand",
+		"body": [
+			"{",
+			"  desc: \"${1:desciption}\",",
+			"  func: ${2:functionName},",
+			"  desc: [$0]",
+			"}"
+		]
 	}
 }
