@@ -1,4 +1,4 @@
-import "./api/CustomCommand/IndexCCommand";
+import "./api/CustomCommand/CustomCommand";
 import "./api/ConsoleCommandUI/IndexConsoleC";
 import "./api/GametestOptions/Events";
 import "./api/Watchdog";

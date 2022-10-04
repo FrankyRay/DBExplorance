@@ -1,7 +1,7 @@
 // @ts-check
 import { world, ItemStack, Items } from "mojang-minecraft";
-import Print from "../../lib/Print.js";
-import { AddEnchantment } from "../../lib/Enchantments.js";
+import Print from "../lib/Print.js";
+import { AddEnchantment } from "../lib/Enchantments.js";
 
 const ExampleComponentLib = {
   Data: 0,

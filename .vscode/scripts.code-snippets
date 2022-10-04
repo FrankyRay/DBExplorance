@@ -57,7 +57,7 @@
 			"{",
 			"  desc: \"${1:desciption}\",",
 			"  func: ${2:functionName},",
-			"  desc: [$0]",
+			"  args: [$0]",
 			"}"
 		]
 	}

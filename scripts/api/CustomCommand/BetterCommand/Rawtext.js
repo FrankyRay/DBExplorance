@@ -2,8 +2,7 @@
 import { world } from "mojang-minecraft";
 
 export default function Rawtext(player, args) {
-  let optsRawtext = args.split(" ")[0];
-  let text = args.substring(args.indexOf(" ") + 1);
+  let [optsRawtext, text] = args;
   let regexRawtext = /(\<@\w(?:\[.*?\])?(?:\|\w+)?\>)/g;
   let messagePiece = text.split(regexRawtext);
   // console.warn(JSON.stringify(messagePiece));

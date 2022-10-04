@@ -7,12 +7,11 @@ const mathSymbol = ["+", "-", "*", "/", "%"];
 /**
  * Math function for custom command `/math`
  *
- * @param {string} args
  * @param {import("mojang-minecraft").Player} player
+ * @param {string} args
  */
-export default function Math(args, player) {
-  let subcommand = args.split(" ")[0];
-  let equation = args.replace(subcommand + " ", "");
+export default function Math(player, args) {
+  let [subcommand, equation] = args;
   let result = 0;
 
   switch (subcommand) {

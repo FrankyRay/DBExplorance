@@ -5,9 +5,13 @@
  * @param {String} command
  * The command arguments
  *
+ * @param {Number} final
+ * Return whole last command as string based of position of argument.
+ * Default is `0` (No final argument).
+ *
  * @return {String[]} List of command arguments
  */
-export default function parseCommand(command) {
+export default function parseCommand(command, final = 0) {
   const groups = {
     "{": "}",
     "[": "]",
@@ -18,9 +22,13 @@ export default function parseCommand(command) {
     arg = "",
     escChar = false,
     closingArray = [],
-    closingChar = "";
+    closingChar = "",
+    stringIndex = 0; // No question about this
   for (const char of command) {
-    if (escChar) {
+    if (commandArgs.length === final && final > 0) {
+      commandArgs.push(command.slice(stringIndex + 1).trim());
+      break;
+    } else if (escChar) {
       escChar = false;
     } else if (char == "\\") {
       escChar = true;
@@ -40,6 +48,7 @@ export default function parseCommand(command) {
       continue;
     }
     arg += char;
+    stringIndex++;
   }
   if (arg) commandArgs.push(arg);
   return commandArgs;

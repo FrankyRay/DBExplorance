@@ -1,15 +1,15 @@
 // @ts-check
 import { Items, ItemStack, world } from "mojang-minecraft";
 import { ModalFormData } from "mojang-minecraft-ui";
-import CancelReason from "../../lib/CancelationReason.js";
-import Print from "../../lib/Print.js";
-import setTickTimeout from "../../lib/TickTimeout.js";
+import CancelReason from "../lib/CancelationReason.js";
+import Print from "../lib/Print.js";
+import setTickTimeout from "../lib/TickTimeout.js";
 // Command File Extended
-import CmdComp from "./CmdComponent.js";
-import FunctionCommand from "./Functions.js";
-import Item from "./BetterCommand/Item";
-import Math from "./Math.js";
-import Rawtext from "./Rawtext.js";
+import CmdComp from "../api/CustomCommand/CmdComponent.js";
+import FunctionCommand from "../api/CustomCommand/Functions.js";
+import Item from "../api/CustomCommand/BetterCommand/Item";
+import Math from "../api/CustomCommand/Math.js";
+import Rawtext from "../api/CustomCommand/BetterCommand/Rawtext.js";
 
 // Prefix command
 const prefix = "\\";
@@ -65,7 +65,7 @@ function CustomCommand(command, args, player) {
       break;
 
     case "math":
-      Math(args, player);
+      Math(player, args);
       break;
 
     case "msgdelay":

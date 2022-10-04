@@ -45,15 +45,15 @@ const __ItemComponent = {
  * @param {string} args
  */
 export default function ItemCommand(player, args) {
-  const itemCommandType = args.split(" ")[0];
+  const [itemCommandType, ...anotherArgs] = args;
 
   switch (itemCommandType) {
     case "give":
-      ItemGive(player, args.substring(args.indexOf(" ") + 1));
+      ItemGive(player, anotherArgs);
       break;
 
     case "spawn":
-      ItemSpawn(player, args.substring(args.indexOf(" ") + 1));
+      ItemSpawn(player, anotherArgs);
       break;
 
     default:
@@ -66,23 +66,23 @@ export default function ItemCommand(player, args) {
  * @param {string} args
  */
 function ItemGive(player, args) {
-  const name = args.split(" ")[0];
+  const name = args[0];
 
-  const amount = args.split(" ")[1] ?? 1;
+  const amount = args[1] ?? 1;
   // [Error-Log] Amount is not a number
   if (isNaN(parseInt(amount)))
     return Print(`§c[Error]§r Amount is not a number`);
   else if (parseInt(amount) > 64)
     return Print(`§c[Error]§r Exceeding max amount [${amount} / 64]`);
 
-  const strComp = args.match(/(\{(.*)\})/g)?.toString() ?? "{}";
+  // const strComp = args.match(/(\{(.*)\})/g)?.toString() ?? "{}";
   try {
-    JSON.parse(strComp);
+    JSON.parse(args[2]);
   } catch (err) {
     // [Error-Log] Failed to parse JSON Object
     return Print(`§c[Error]§r Failed to parse JSON Object`);
   }
-  const itemComp = JSON.parse(strComp);
+  const itemComp = JSON.parse(args[2]);
 
   const dataValue = "Data" in itemComp ? itemComp["Data"] : 0;
   const inventory = player.getComponent("minecraft:inventory").container;
@@ -181,23 +181,23 @@ function ItemGive(player, args) {
  * @param {String} args
  */
 function ItemSpawn(player, args) {
-  const [x, y, z, name] = args.split(" ");
+  const [x, y, z, name] = args;
 
-  const amount = args.split(" ")[4] ?? 1;
+  const amount = args[4] ?? 1;
   // [Error-Log] Amount is not a number
   if (isNaN(parseInt(amount)))
     return Print(`§c[Error]§r Amount is not a number`);
   else if (parseInt(amount) > 64)
     return Print(`§c[Error]§r Exceeding max amount [${amount} / 64]`);
 
-  const strComp = args.match(/(\{(.*)\})/g)?.toString() ?? "{}";
+  // const strComp = args.match(/(\{(.*)\})/g)?.toString() ?? "{}";
   try {
-    JSON.parse(strComp);
+    JSON.parse(args[5]);
   } catch (err) {
     // [Error-Log] Failed to parse JSON Object
     return Print(`§c[Error]§r Failed to parse JSON Object`);
   }
-  const itemComp = JSON.parse(strComp);
+  const itemComp = JSON.parse(args[5]);
 
   const dataValue = itemComp["Data"] ?? 0;
 

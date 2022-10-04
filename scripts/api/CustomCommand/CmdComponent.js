@@ -7,7 +7,8 @@ import { world } from "mojang-minecraft";
  * @param {string} commands Command string
  */
 export default function CmdComp(player, commands) {
-  if (commands.startsWith("/")) commands = commands.substring(1);
+  let command = commands[0];
+  if (command.startsWith("/")) command = command.substring(1);
 
   let comp = "";
   let error = false;
