@@ -7,7 +7,7 @@ import {
   HttpRequestMethod,
   HttpResponse,
 } from "mojang-net";
-import { secrets } from "mojang-minecraft-server-admin";
+import { secrets } from "@minecraft/server-server-admin";
 
 /**
  * Console log to discord by using link webhook

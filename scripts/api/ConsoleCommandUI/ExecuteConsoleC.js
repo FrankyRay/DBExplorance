@@ -1,9 +1,9 @@
-import { world } from "mojang-minecraft";
+import { world } from "@minecraft/server";
 import {
   ActionFormData,
   MessageFormData,
   ModalFormData,
-} from "mojang-minecraft-ui";
+} from "@minecraft/server-ui";
 import GetScore from "../../lib/GetScore.js";
 
 export default function ExecuteCommandMode(player) {

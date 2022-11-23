@@ -1,0 +1,2 @@
+Regex: Target Selector
+/([a-z]*)=(((\")?[\w\s]+(\")?)|(\{.*?\}))/g

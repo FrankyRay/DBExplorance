@@ -1,5 +1,5 @@
-import { world, EntityRaycastOptions } from "mojang-minecraft";
-import { MessageFormData } from "mojang-minecraft-ui";
+import { world, EntityRaycastOptions } from "@minecraft/server";
+import { MessageFormData } from "@minecraft/server-ui";
 
 world.events.beforeItemUse.subscribe((event) => {
   const { item, source } = event;
@@ -20,8 +20,8 @@ world.events.beforeItemUse.subscribe((event) => {
 
 /**
  * Show entity component XMLList
- * @param {import("mojang-minecraft").Player} player The player class for showing UI
- * @param {import("mojang-minecraft").Entity} entity The entity for taking the component
+ * @param {import("@minecraft/server").Player} player The player class for showing UI
+ * @param {import("@minecraft/server").Entity} entity The entity for taking the component
  */
 function EntityComponentUI(player, entity) {
   const componentForm = new MessageFormData()

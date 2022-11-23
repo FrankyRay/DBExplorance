@@ -1,6 +1,6 @@
-import { world } from "mojang-minecraft";
+import { world } from "@minecraft/server";
 import Print from "../../lib/Print";
-// Testing all events on "mojang-minecraft" module
+// Testing all events on "@minecraft/server" module
 
 // Variable "Event" for fast typing
 const Event = world.events;

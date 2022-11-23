@@ -1,4 +1,4 @@
-import { FormCancelationReason } from "mojang-minecraft-ui";
+import { FormCancelationReason } from "@minecraft/server-ui";
 
 export default function CancelReason(reason) {
   if (reason == FormCancelationReason.userBusy)

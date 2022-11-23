@@ -1,5 +1,5 @@
 // @ts-check
-import { world, BlockRaycastOptions } from "mojang-minecraft";
+import { world, BlockRaycastOptions } from "@minecraft/server";
 
 /**
  * Simple BlockRaycastOptions function

@@ -5,7 +5,7 @@ import {
   Location,
   Player,
   world,
-} from "mojang-minecraft";
+} from "@minecraft/server";
 import Print from "../../../lib/Print.js";
 import { AddEnchantment } from "../../../lib/Enchantments.js";
 
@@ -77,12 +77,12 @@ function ItemGive(player, args) {
 
   // const strComp = args.match(/(\{(.*)\})/g)?.toString() ?? "{}";
   try {
-    JSON.parse(args[2]);
+    JSON.parse(args[2] ? args[2] : "{}");
   } catch (err) {
     // [Error-Log] Failed to parse JSON Object
     return Print(`§c[Error]§r Failed to parse JSON Object`);
   }
-  const itemComp = JSON.parse(args[2]);
+  const itemComp = JSON.parse(args[2] ? args[2] : "{}");
 
   const dataValue = "Data" in itemComp ? itemComp["Data"] : 0;
   const inventory = player.getComponent("minecraft:inventory").container;

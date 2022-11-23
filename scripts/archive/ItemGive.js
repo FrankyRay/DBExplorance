@@ -1,5 +1,5 @@
 // @ts-check
-import { world, ItemStack, Items } from "mojang-minecraft";
+import { world, ItemStack, Items } from "@minecraft/server";
 import Print from "../lib/Print.js";
 import { AddEnchantment } from "../lib/Enchantments.js";
 
@@ -31,7 +31,7 @@ const ExampleComponentLib = {
 };
 
 /**
- * @param {import("mojang-minecraft").Player} player
+ * @param {import("@minecraft/server").Player} player
  * @param {string} args
  */
 export default function ItemGive(player, args) {

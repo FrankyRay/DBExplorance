@@ -1,5 +1,5 @@
 // @ts-check
-import { world } from "mojang-minecraft";
+import { world } from "@minecraft/server";
 
 export default function Rawtext(player, args) {
   let [optsRawtext, text] = args;

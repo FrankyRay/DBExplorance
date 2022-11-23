@@ -1,6 +1,6 @@
 // @ts-check
 import "./MainConfig";
-import { BlockRaycastOptions, world } from "mojang-minecraft";
+import { BlockRaycastOptions, world } from "@minecraft/server";
 
 world.events.tick.subscribe((tick) => {
   for (const player of world.getPlayers()) {
@@ -30,7 +30,7 @@ world.events.tick.subscribe((tick) => {
 });
 
 /**
- * @param {import("mojang-minecraft").Player} player
+ * @param {import("@minecraft/server").Player} player
  * @param {string} type
  */
 function PlayerTick(player, type) {
@@ -90,7 +90,7 @@ function PlayerTick(player, type) {
 }
 
 /**
- * @param {import("mojang-minecraft").Player} player
+ * @param {import("@minecraft/server").Player} player
  * @param {string} type
  */
 function BlockTick(player, type) {

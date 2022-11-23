@@ -1,4 +1,4 @@
-import { Player, Entity } from "mojang-minecraft";
+import { Player, Entity } from "@minecraft/server";
 
 const EntityExtension = {
   uid() {

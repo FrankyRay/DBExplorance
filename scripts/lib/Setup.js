@@ -1,4 +1,4 @@
-import { world } from "mojang-minecraft";
+import { world } from "@minecraft/server";
 import Print from "./Print";
 
 let Command = world.getDimension("overworld").runCommand;

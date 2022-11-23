@@ -1,5 +1,5 @@
 // @ts-check
-import { world } from "mojang-minecraft";
+import { world } from "@minecraft/server";
 
 /**
  * Print the message to the player (all/specific) with tellraw command.

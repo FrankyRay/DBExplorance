@@ -1,10 +1,10 @@
 // @ts-check
-import { world, Player } from "mojang-minecraft";
+import { world, Player } from "@minecraft/server";
 import {
   ActionFormData,
   MessageFormData,
   ModalFormData,
-} from "mojang-minecraft-ui";
+} from "@minecraft/server-ui";
 import Print from "../../lib/Print";
 import * as ConsC from "./FunctionsConsoleC.js";
 
@@ -89,7 +89,7 @@ function ConsoleCommands(player) {
 world.events.beforeItemUse.subscribe((eventItem) => {
   let item = eventItem.item;
   // console.warn(`Console Command Debug => BeforeItemUse Event -> ${item.id}`);
-  /** @type {import("mojang-minecraft").Player} */
+  /** @type {import("@minecraft/server").Player} */
   // @ts-ignore
   let player = eventItem.source;
   let lores = item.getLore();

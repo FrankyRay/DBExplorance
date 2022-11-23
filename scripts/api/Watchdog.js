@@ -1,4 +1,4 @@
-import { system } from "mojang-minecraft";
+import { system } from "@minecraft/server";
 
 system.events.beforeWatchdogTerminate.subscribe((data) => {
   data.cancel = true;

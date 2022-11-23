@@ -1,9 +1,9 @@
 // @ts-check
-import { world } from "mojang-minecraft";
+import { world } from "@minecraft/server";
 
 /**
  * Get score from scoreboard
- * @param {import("mojang-minecraft").Entity|import("mojang-minecraft").Player|string} target Scoreboard target/player
+ * @param {import("@minecraft/server").Entity|import("@minecraft/server").Player|string} target Scoreboard target/player
  * @param {string} objective Scoreboard objective
  * @param {boolean} failsave Return 0 [true]/Throw Error [false] if the entity was not there
  * @return {number} Score of the entity

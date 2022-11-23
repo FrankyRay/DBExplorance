@@ -1,9 +1,9 @@
 // @ts-check
-import { world } from "mojang-minecraft";
+import { world } from "@minecraft/server";
 
 /**
  * Take the command's returned data
- * @param {import("mojang-minecraft").Player} player Player who run the command
+ * @param {import("@minecraft/server").Player} player Player who run the command
  * @param {string} commands Command string
  */
 export default function CmdComp(player, commands) {

@@ -1,13 +1,13 @@
 // @ts-check
-import { MinecraftEnchantmentTypes, world } from "mojang-minecraft";
+import { MinecraftEnchantmentTypes, world } from "@minecraft/server";
 
 /**
  * Check the illegal enchantment on item
- * @param {import("mojang-minecraft").Player} player
+ * @param {import("@minecraft/server").Player} player
  */
 export default function IllegalEnchantmentItem(player) {
   /**
-   * @type {import("mojang-minecraft").InventoryComponentContainer}
+   * @type {import("@minecraft/server").InventoryComponentContainer}
    */
   // @ts-ignore
   let inventory = player.getComponent("inventory").container;
@@ -18,7 +18,7 @@ export default function IllegalEnchantmentItem(player) {
     if (!item) continue;
 
     /**
-     * @type {import("mojang-minecraft").EnchantmentList}
+     * @type {import("@minecraft/server").EnchantmentList}
      */
     let enchantments = item.getComponent("enchantments").enchantments;
   }

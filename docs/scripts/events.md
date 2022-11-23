@@ -7,7 +7,7 @@
 Gametest has so many event that can be used. Some useful one is `chat`, `itemUse`, etc.
 
 ```js title="[Script] Event Handle"
-import { world } from "mojang-minecraft";
+import { world } from "@minecraft/server";
 
 world.events.*.subscribe(eventData => {
     // Code

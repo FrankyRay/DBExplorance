@@ -1,9 +1,9 @@
-import { world } from "mojang-minecraft";
+import { world } from "@minecraft/server";
 import {
   ActionFormData,
   MessageFormData,
   ModalFormData,
-} from "mojang-minecraft-ui";
+} from "@minecraft/server-ui";
 import Print from "../../lib/Print";
 
 export function VolumeareaAdd(player) {

@@ -1,5 +1,5 @@
-import { world } from "mojang-minecraft";
-import { ModalFormData } from "mojang-minecraft-ui";
+import { world } from "@minecraft/server";
+import { ModalFormData } from "@minecraft/server-ui";
 
 export function Testforentity(player) {
   let formTestforentity = new ModalFormData();

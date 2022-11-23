@@ -1,9 +1,9 @@
-import { Location, BlockLocation } from "mojang-minecraft";
+import { Location, BlockLocation } from "@minecraft/server";
 
 /**
  * Return string location into `Location()` class
  * @param {string} location String consist 3 set of coordinate number
- * @returns {import("mojang-minecraft").Location} Location class
+ * @returns {import("@minecraft/server").Location} Location class
  */
 export function StringToLocation(location) {
   let locList = location.split(" ").map((val) => parseInt(val));
@@ -13,7 +13,7 @@ export function StringToLocation(location) {
 /**
  * Return string location into `BlockLocation()` class
  * @param {string} location String consist 3 set of coordinate number
- * @returns {import("mojang-minecraft").BlockLocation} BlockLocation class
+ * @returns {import("@minecraft/server").BlockLocation} BlockLocation class
  */
 export function StringToBlockLocation(location) {
   let locList = location.split(" ").map((val) => parseInt(val));

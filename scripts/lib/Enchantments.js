@@ -1,8 +1,8 @@
-import { world } from "mojang-minecraft";
+import { world } from "@minecraft/server";
 
 /**
  * Add enchantment to the item
- * @param {import("mojang-minecraft").ItemStack} item The Item Class
+ * @param {import("@minecraft/server").ItemStack} item The Item Class
  * @param {string} enchantID Enchantment ID. For example `"unbreaking"` or `"mending"`
  * @param {number} enchantLevel Enchantment Level. The level can't be exceed the normal enchantment value. Default value: 1.
  */
@@ -17,7 +17,7 @@ export function AddEnchantment(item, enchantID, enchantLevel = 1) {
 
 /**
  * Get every enchantments on the item and mapping into Object
- * @param {import("mojang-minecraft").ItemStack} item The Item Class
+ * @param {import("@minecraft/server").ItemStack} item The Item Class
  * @return {object[]} Array of object contain every enchantments id and lvl
  */
 export function GetEnchantment(item) {

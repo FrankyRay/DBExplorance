@@ -1,6 +1,6 @@
 // @ts-check
-import { Items, ItemStack, world } from "mojang-minecraft";
-import { ModalFormData } from "mojang-minecraft-ui";
+import { Items, ItemStack, world } from "@minecraft/server";
+import { ModalFormData } from "@minecraft/server-ui";
 import CancelReason from "../lib/CancelationReason.js";
 import Print from "../lib/Print.js";
 import setTickTimeout from "../lib/TickTimeout.js";
@@ -20,7 +20,7 @@ const cmdDesc = {};
  *
  * @param {string} command Custom command ID
  * @param {string} args Arguments of the command
- * @param {import("mojang-minecraft").Player} player Player running the command
+ * @param {import("@minecraft/server").Player} player Player running the command
  */
 function CustomCommand(command, args, player) {
   // Switch the command

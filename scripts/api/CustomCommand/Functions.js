@@ -1,9 +1,9 @@
-import { world } from "mojang-minecraft";
+import { world } from "@minecraft/server";
 import Print from "../../lib/Print";
 
 /**
  * Function command
- * @param {import("mojang-minecraft").Player} player
+ * @param {import("@minecraft/server").Player} player
  * @param {String} args
  */
 export default function FunctionCommand(player, args) {

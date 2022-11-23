@@ -1,5 +1,5 @@
-import { BlockRaycastOptions, world } from "mojang-minecraft";
-import { ModalFormData } from "mojang-minecraft-ui";
+import { BlockRaycastOptions, world } from "@minecraft/server";
+import { ModalFormData } from "@minecraft/server-ui";
 import Print from "../lib/Print";
 
 world.events.beforeItemUseOn.subscribe((eventItem) => {
@@ -20,8 +20,8 @@ world.events.beforeItemUseOn.subscribe((eventItem) => {
 
 /**
  * Change permutation
- * @param {import("mojang-minecraft").Player} player Player Class
- * @param {import("mojang-minecraft").Block} block Block
+ * @param {import("@minecraft/server").Player} player Player Class
+ * @param {import("@minecraft/server").Block} block Block
  */
 function changePermutationBlock(player, block) {
   const permutationForm = new ModalFormData().title(

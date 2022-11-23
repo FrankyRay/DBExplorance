@@ -1,16 +1,16 @@
-import { world } from "mojang-minecraft";
+import { world } from "@minecraft/server";
 import {
   ActionFormData,
   MessageFormData,
   ModalFormData,
-} from "mojang-minecraft-ui";
+} from "@minecraft/server-ui";
 import CancelReason from "../../lib/CancelationReason";
 import Print from "../../lib/Print";
 
 world.events.beforeItemUse.subscribe((eventItem) => {
   let item = eventItem.item;
   // console.warn(`Console Command Debug => BeforeItemUse Event -> ${item.id}`);
-  /** @type {import("mojang-minecraft").Player} */
+  /** @type {import("@minecraft/server").Player} */
   // @ts-ignore
   let player = eventItem.source;
   let lores = item.getLore();
@@ -56,7 +56,7 @@ function ConfigInfoTick(player) {
 }
 
 /**
- * @param {import("mojang-minecraft").Player} player
+ * @param {import("@minecraft/server").Player} player
  */
 function PlayerInfoTick(player) {
   const playerSelection = ["General", "List", "Health"];
@@ -81,7 +81,7 @@ function PlayerInfoTick(player) {
 }
 
 /**
- * @param {import("mojang-minecraft").Player} player
+ * @param {import("@minecraft/server").Player} player
  */
 function BlockInfoTick(player) {
   const blockSelection = ["General", "State"];

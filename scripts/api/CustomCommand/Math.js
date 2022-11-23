@@ -1,5 +1,5 @@
 // @ts-check
-import { world } from "mojang-minecraft";
+import { world } from "@minecraft/server";
 import Print from "../../lib/Print";
 
 const mathSymbol = ["+", "-", "*", "/", "%"];
@@ -7,7 +7,7 @@ const mathSymbol = ["+", "-", "*", "/", "%"];
 /**
  * Math function for custom command `/math`
  *
- * @param {import("mojang-minecraft").Player} player
+ * @param {import("@minecraft/server").Player} player
  * @param {string} args
  */
 export default function Math(player, args) {
@@ -37,7 +37,8 @@ export default function Math(player, args) {
 
     case "multiply":
       let numListMultiply = equation.split(" ");
-      numListMultiply.forEach((num) => (result += parseInt(num)));
+      result = 1;
+      numListMultiply.forEach((num) => (result *= parseInt(num)));
       Print(
         `Math Command:\n§9[Multiply] §e${numListMultiply.join(
           " * "

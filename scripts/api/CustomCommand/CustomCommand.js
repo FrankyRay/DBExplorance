@@ -1,4 +1,4 @@
-import { Player, world } from "mojang-minecraft";
+import { Player, world } from "@minecraft/server";
 import ParseCommand from "../../lib/CommandParsing";
 import Print from "../../lib/Print.js";
 import setTickTimeout from "../../lib/TickTimeout.js";
@@ -40,6 +40,7 @@ const commands = {
   math: {
     desc: "Math calculation inside Minecraft",
     func: Math,
+    last: 2,
     args: [
       `${mainPrefix}math eq <...equation: str>`,
       `${mainPrefix}math add <...numbers: int>`,
