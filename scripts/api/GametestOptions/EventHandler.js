@@ -117,13 +117,13 @@ EVENT.effectAdd.subscribe((eventEffectAdd) => {
   );
 });
 
-EVENT.entityCreate.subscribe((eventEntityCreate) => {
-  if (GetScore("entityCreate", "gt_events") == 0) return;
-  const {
-    entity: { id, nameTag },
-  } = eventEntityCreate;
-  Print(`[LOG][EVENT]-(EntityCreate)\n  Entity: ${id} ~ ${nameTag}`);
-});
+// EVENT.entityCreate.subscribe((eventEntityCreate) => {
+//   if (GetScore("entityCreate", "gt_events") == 0) return;
+//   const {
+//     entity: { id, nameTag },
+//   } = eventEntityCreate;
+//   Print(`[LOG][EVENT]-(EntityCreate)\n  Entity: ${id} ~ ${nameTag}`);
+// });
 
 EVENT.entityHit.subscribe((eventEntityHit) => {
   if (GetScore("entityHit", "gt_events") == 0) return;

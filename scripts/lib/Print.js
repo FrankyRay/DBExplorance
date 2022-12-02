@@ -34,5 +34,5 @@ export default function Print(message, target = "@a", prefix = null) {
   // Send message if no prefix provided/null
   world
     .getDimension("overworld")
-    .runCommand(`tellraw ${target} {"rawtext": [{"text": "${message}"}]}`);
+    .runCommandAsync(`tellraw ${target} {"rawtext": [{"text": "${message}"}]}`);
 }

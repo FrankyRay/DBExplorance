@@ -1,11 +1,20 @@
-import { world } from "@minecraft/server";
+import {
+  world,
+  system,
+  MinecraftBlockTypes,
+  MinecraftEffectTypes,
+  ItemTypes,
+} from "@minecraft/server";
+import Print from "../lib/Print";
 
-export default class CustomCommand {
+class CustomCommand {
   // Command prefix
   prefix = "\\";
+  // Help command prefix
+  helpPrefix = "?";
 
   // Valid argument types
-  argsType = ["string", "number", "boolean", "object", "location"];
+  // argsType = ["string", "number", "boolean", "object", "location"];
 
   // List of command data
   commands = [];
@@ -66,7 +75,7 @@ export default class CustomCommand {
       stringIndex = 0; // No question about this
     for (const char of command) {
       if (commandArgs.length === lastArgument && lastArgument > 0) {
-        commandArgs.push(command.slice(stringIndex + 1).trim());
+        commandArgs.push(command.slice(stringIndex + 2).trim());
         break;
       } else if (escChar) {
         escChar = false;
@@ -89,9 +98,10 @@ export default class CustomCommand {
       }
       arg += char;
       stringIndex++;
+      // console.log(stringIndex);
     }
     if (arg) commandArgs.push(arg);
-    return this.#checkArguments(commandArgs);
+    return commandArgs;
   }
 
   /**
@@ -99,22 +109,62 @@ export default class CustomCommand {
    * argument's value type and set the value on corresponding
    * argument inside object
    *
-   * @param {String[]} rawArgs
+   * @param {String[]} message
    * List of arguments (in string)
    *
    * @return {object} Object of command arguments
    */
-  #checkArguments(rawArgs) {
+  #checkArguments(message) {
+    // Run for checking the command's ID
+    const rawCommand = this.#parseArguments(message, 1)[0];
+    // console.log(rawCommand);
+
+    // Check if the command exist
+    const commandArgs = this.commands.find(
+      (command) => command.name === rawCommand
+    )?.args;
+    if (!commandArgs) return Print(`Commands ${rawCommand} is not available`);
+
+    // Run the function for actual argument values
+    const rawArgs = this.#parseArguments(message, commandArgs.length);
     let newArgs = {
       command: rawArgs[0],
     };
-    const commandArgs = this.commands.find(
-      (command) => command.name === rawArgs[0]
-    )["args"];
 
+    // Index of argument value
     let argIndex = 1;
     for (let i = 0; i < commandArgs.length; i++) {
       switch (commandArgs[i]["type"]) {
+        case "block":
+          if (!rawArgs[argIndex])
+            newArgs[commandArgs[i]["name"]] =
+              MinecraftBlockTypes.get(commandArgs[i]["default"]) ??
+              this.#errorArgs(`Argument ${commandArgs[i]["name"]} is required`);
+          else {
+            newArgs[commandArgs[i]["name"]] =
+              MinecraftBlockTypes.get(
+                !rawArgs[argIndex].includes(":")
+                  ? `minecraft:${rawArgs[argIndex]}`
+                  : rawArgs[argIndex]
+              ) ?? this.#errorArgs(`${rawArgs[argIndex]} is not a valid block`);
+          }
+          break;
+
+        case "item":
+          if (!rawArgs[argIndex])
+            newArgs[commandArgs[i]["name"]] =
+              ItemTypes.get(commandArgs[i]["default"]) ??
+              this.#errorArgs(`Argument ${commandArgs[i]["name"]} is required`);
+          else {
+            newArgs[commandArgs[i]["name"]] =
+              ItemTypes.get(
+                !rawArgs[argIndex].includes(":")
+                  ? `minecraft:${rawArgs[argIndex]}`
+                  : rawArgs[argIndex]
+              ) ?? this.#errorArgs(`${rawArgs[argIndex]} is not a valid item`);
+          }
+          break;
+
         case "location":
           if (!rawArgs[argIndex])
             newArgs[commandArgs[i]["name"]] =
@@ -162,12 +212,23 @@ export default class CustomCommand {
             newArgs[commandArgs[i]["name"]] =
               commandArgs[i]["default"] ??
               this.#errorArgs(`Argument ${commandArgs[i]["name"]} is required`);
-          else
-            newArgs[commandArgs[i]["name"]] = !isNaN(rawArgs[argIndex])
-              ? Number(rawArgs[argIndex])
-              : this.#errorArgs(
-                  `"${rawArgs[argIndex]}" is not a valid integer.`
-                );
+          else if (isNaN(rawArgs[argIndex]))
+            this.#errorArgs(`"${rawArgs[argIndex]}" is not a valid integer.`);
+          else if (
+            Number(rawArgs[argIndex]) < commandArgs[i]["options"]["min"] ??
+            -2_147_483_648
+          )
+            this.#errorArgs(
+              `"${rawArgs[argIndex]}" is too small (minimum is ${commandArgs[i]["options"]["min"]})`
+            );
+          else if (
+            Number(rawArgs[argIndex]) > commandArgs[i]["options"]["max"] ??
+            -2_147_483_648
+          )
+            this.#errorArgs(
+              `"${rawArgs[argIndex]}" is too large (maximum is ${commandArgs[i]["options"]["max"]})`
+            );
+          else newArgs[commandArgs[i]["name"]] = Number(rawArgs[argIndex]);
           break;
 
         case "boolean":
@@ -197,7 +258,9 @@ export default class CustomCommand {
   }
 
   #commandHandler(player, command) {
-    const argument = this.#parseArguments(command);
+    const argument = this.#checkArguments(command);
+    // console.log(argument);
+    if (!argument) return;
 
     this.commands
       .find((command) => command["name"] == argument.command)
@@ -213,7 +276,26 @@ export default class CustomCommand {
    * @throws Throw a message error
    */
   #errorArgs(message) {
+    Print(`§c${message}§r`);
     throw new Error(message);
+  }
+
+  #helpHandler(player, message) {
+    const argument = this.#parseArguments(message);
+    if (!argument) return;
+
+    const command = this.commands.find(
+      (command) => command.name === argument[0]
+    );
+
+    let helpMessage = `\\${command.name} ~ ${command.desc}\nArguments: ${command.name} `;
+    for (let i = 0; i < command.args.length; i++) {
+      helpMessage += `[${command.args[i].name}${
+        command.args[i].default != undefined ? "?" : ""
+      }: ${command.args[i].type}] `;
+    }
+
+    console.log(helpMessage);
   }
 
   /**
@@ -221,14 +303,44 @@ export default class CustomCommand {
    */
   #run() {
     world.events.beforeChat.subscribe((eventChat) => {
-      const { cancel, message, sender: player } = eventChat;
+      const { message, sender: player } = eventChat;
 
       if (message.startsWith(this.prefix)) {
         // Cancel the message being sent
-        cancel = true;
+        eventChat.cancel = true;
         // Run the command
-        this.#commandHandler(player, message);
+        this.#commandHandler(player, message.replace(this.prefix, ""));
+      } else if (message.startsWith(this.helpPrefix)) {
+        // Cancel the message being sent
+        eventChat.cancel = true;
+        // Run the command
+        this.#helpHandler(player, message.replace(this.helpPrefix, ""));
+      }
+    });
+
+    system.events.scriptEventReceive.subscribe((eventScript) => {
+      // Run when "debug:command" message ID was specify
+      if (eventScript.id === "debug:command") {
+        // Logs the info that the command ran with "/scriptevent" command
+        console.log(
+          `Custom command executed with '/scriptevent' command as ${eventScript.sourceType}`
+        );
+        if (eventScript.message.startsWith(this.prefix)) {
+          // Run the command
+          this.#commandHandler(
+            eventScript.sourceEntity,
+            eventScript.message.replace(this.prefix, "")
+          );
+        } else if (eventScript.message.startsWith(this.helpPrefix)) {
+          // Run the command
+          this.#helpHandler(
+            eventScript.sourceEntity,
+            eventScript.message.replace(this.helpPrefix, "")
+          );
+        }
       }
     });
   }
 }
+
+export default new CustomCommand();
