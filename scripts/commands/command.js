@@ -75,7 +75,7 @@ class CustomCommand {
       stringIndex = 0; // No question about this
     for (const char of command) {
       if (commandArgs.length === lastArgument && lastArgument > 0) {
-        commandArgs.push(command.slice(stringIndex + 2).trim());
+        commandArgs.push(command.slice(stringIndex).trim());
         break;
       } else if (escChar) {
         escChar = false;
@@ -94,11 +94,11 @@ class CustomCommand {
           commandArgs.push(arg);
           arg = "";
         }
+        stringIndex++;
         continue;
       }
       arg += char;
       stringIndex++;
-      // console.log(stringIndex);
     }
     if (arg) commandArgs.push(arg);
     return commandArgs;
@@ -117,10 +117,9 @@ class CustomCommand {
   #checkArguments(message) {
     // Run for checking the command's ID
     const rawCommand = this.#parseArguments(message, 1)[0];
-    // console.log(rawCommand);
 
     // Check if the command exist
-    const commandArgs = this.commands.find(
+    let commandArgs = this.commands.find(
       (command) => command.name === rawCommand
     )?.args;
     if (!commandArgs) return Print(`Commands ${rawCommand} is not available`);
@@ -135,6 +134,21 @@ class CustomCommand {
     let argIndex = 1;
     for (let i = 0; i < commandArgs.length; i++) {
       switch (commandArgs[i]["type"]) {
+        case "option":
+          if (!rawArgs[argIndex])
+            this.#errorArgs(`Argument ${commandArgs[i]["name"]} is required`);
+          const option = commandArgs[i]["list"].find(
+            (options) => options.name === rawArgs[argIndex]
+          );
+          if (!option)
+            this.#errorArgs(
+              `There's no '${rawArgs[argIndex]}' option available`
+            );
+
+          newArgs[commandArgs[i]["name"]] = rawArgs[argIndex];
+          commandArgs.splice(i + 1, 0, ...(option.subcommands ?? []));
+          break;
+
         case "block":
           if (!rawArgs[argIndex])
             newArgs[commandArgs[i]["name"]] =
@@ -152,14 +166,17 @@ class CustomCommand {
 
         case "item":
           if (!rawArgs[argIndex])
-            newArgs[commandArgs[i]["name"]] =
-              ItemTypes.get(commandArgs[i]["default"]) ??
-              this.#errorArgs(`Argument ${commandArgs[i]["name"]} is required`);
+            newArgs[commandArgs[i]["name"]] = ItemTypes.get(
+              commandArgs[i]["default"] ??
+                this.#errorArgs(
+                  `Argument ${commandArgs[i]["name"]} is required`
+                )
+            );
           else {
             newArgs[commandArgs[i]["name"]] =
               ItemTypes.get(
                 !rawArgs[argIndex].includes(":")
-                  ? `minecraft:${rawArgs[argIndex]}`
+                  ? "minecraft:" + rawArgs[argIndex]
                   : rawArgs[argIndex]
               ) ?? this.#errorArgs(`${rawArgs[argIndex]} is not a valid item`);
           }
@@ -192,6 +209,17 @@ class CustomCommand {
           }
           break;
 
+        case "selector":
+          if (!rawArgs[argIndex])
+            newArgs[commandArgs[i]["name"]] =
+              commandArgs[i]["default"] ??
+              this.#errorArgs(`Argument ${commandArgs[i]["name"]} is required`);
+          else
+            newArgs[commandArgs[i]["name"]] = this.#argumentSelector(
+              rawArgs[argIndex]
+            );
+          break;
+
         case "object":
           if (!rawArgs[argIndex])
             newArgs[commandArgs[i]["name"]] =
@@ -219,14 +247,18 @@ class CustomCommand {
             -2_147_483_648
           )
             this.#errorArgs(
-              `"${rawArgs[argIndex]}" is too small (minimum is ${commandArgs[i]["options"]["min"]})`
+              `"${rawArgs[argIndex]}" is too small (minimum is ${
+                commandArgs[i]["options"]["min"] ?? -2_147_483_648
+              })`
             );
           else if (
             Number(rawArgs[argIndex]) > commandArgs[i]["options"]["max"] ??
-            -2_147_483_648
+            2_147_483_647
           )
             this.#errorArgs(
-              `"${rawArgs[argIndex]}" is too large (maximum is ${commandArgs[i]["options"]["max"]})`
+              `"${rawArgs[argIndex]}" is too large (maximum is ${
+                commandArgs[i]["options"]["max"] ?? 2_147_483_647
+              })`
             );
           else newArgs[commandArgs[i]["name"]] = Number(rawArgs[argIndex]);
           break;
@@ -255,6 +287,185 @@ class CustomCommand {
       argIndex++;
     }
     return newArgs;
+  }
+
+  #argumentSelector(message) {
+    let list = message.match(
+        /(\w+)\s*\=\s*((?:\!?\w+)|(?:\!?\".+?\")|(?:\{.+?\}))/g
+      ),
+      data = {},
+      location = {},
+      volume = {};
+    for (let i = 0; i < list.length; i++) {
+      let [key, ...value] = list[i].split("=");
+      value = value.join("=");
+
+      switch (key.trim()) {
+        case "c":
+          if (value.startsWith("-")) data.farthest = value;
+          else data.closest = value;
+          break;
+
+        case "dx":
+          volume.x = Number(value);
+          break;
+
+        case "dy":
+          volume.y = Number(value);
+          break;
+
+        case "dz":
+          volume.z = Number(value);
+          break;
+
+        case "family":
+          if (value.startsWith("!"))
+            !data.excludeFamilies
+              ? (data.excludeFamilies = [
+                  value.startsWith('"') ? value.slice(2, -1) : value.slice(1),
+                ])
+              : data.excludeFamilies.push(
+                  value.startsWith('"') ? value.slice(2, -1) : value.slice(1)
+                );
+          else
+            !data.families
+              ? (data.families = [
+                  value.startsWith('"') ? value.slice(1, -1) : value,
+                ])
+              : data.families.push(
+                  value.startsWith('"') ? value.slice(1, -1) : value
+                );
+          break;
+
+        case "l":
+          data.maxLevel = Number(value);
+          break;
+
+        case "lm":
+          data.minLevel = Number(value);
+          break;
+
+        case "m":
+          data.gameMode = Number(value);
+          break;
+
+        case "name":
+          if (value.startsWith("!"))
+            !data.excludeNames
+              ? (data.excludeNames = [
+                  value.startsWith('"') ? value.slice(2, -1) : value.slice(1),
+                  ,
+                ])
+              : data.excludeNames.push(
+                  value.startsWith('"') ? value.slice(2, -1) : value.slice(1)
+                );
+          else if (data.name)
+            throw new Error("Argument selector 'name' doubled");
+          else data.name = value.startsWith('"') ? value.slice(1, -1) : value;
+          break;
+
+        case "r":
+          data.maxDistance = Number(value);
+          break;
+
+        case "rm":
+          data.minDistance = Number(value);
+          break;
+
+        case "rx":
+          data.maxHorizontalRotation = Number(value);
+          break;
+
+        case "rxm":
+          data.minHorizontalRotation = Number(value);
+          break;
+
+        case "ry":
+          data.maxVerticalRotation = Number(value);
+          break;
+
+        case "rym":
+          data.minVerticalRotation = Number(value);
+          break;
+
+        case "scores": // Need fix
+          const scoreList = value.match(
+            /(\w+)\s*\=\s*(?:\!?(\d+)?(\.\.)?(\d+)?)/g
+          );
+          if (scoreList.length === 0) break;
+
+          let scoreData = [];
+          for (const scoreArg of scoreList) {
+            let scoreCurrent = {};
+            let [scoreKey, scoreValue] = scoreArg.split("=");
+            scoreCurrent.objective = scoreKey;
+            if (scoreValue.startsWith("!")) {
+              scoreCurrent.exclude = true;
+              scoreValue = scoreValue.slice(1);
+            }
+            if (scoreValue.startsWith(".."))
+              scoreCurrent.maxScore = scoreValue.replace("..", "");
+            else if (scoreValue.endsWith(".."))
+              scoreCurrent.minScore = scoreValue.replace("..", "");
+            else {
+              scoreCurrent.minScore = scoreValue.replace("..", "")[0];
+              scoreCurrent.maxScore = scoreValue.replace("..", "")[1];
+            }
+            scoreData.push(scoreCurrent);
+          }
+          data.scoreOptions = scoreData;
+          break;
+
+        case "tag":
+          if (value.startsWith("!"))
+            !data.excludeTags
+              ? (data.excludeTags = [
+                  value.startsWith('"') ? value.slice(2, -1) : value.slice(1),
+                  ,
+                ])
+              : data.excludeTags.push(
+                  value.startsWith('"') ? value.slice(2, -1) : value.slice(1)
+                );
+          else
+            !data.tags
+              ? (data.tags = [
+                  value.startsWith('"') ? value.slice(1, -1) : value,
+                ])
+              : data.tags.push(
+                  value.startsWith('"') ? value.slice(1, -1) : value
+                );
+          break;
+
+        case "type":
+          if (value.startsWith("!"))
+            !data.excludeTypes
+              ? (data.excludeTypes = [
+                  value.startsWith('"') ? value.slice(2, -1) : value.slice(1),
+                ])
+              : data.excludeTypes.push(
+                  value.startsWith('"') ? value.slice(2, -1) : value.slice(1)
+                );
+          else if (data.type)
+            throw new Error("Argument selector 'type' doubled");
+          else data.type = value.startsWith('"') ? value.slice(1, -1) : value;
+          break;
+
+        case "x":
+          location.x = Number(value);
+          break;
+
+        case "y":
+          location.y = Number(value);
+          break;
+
+        case "z":
+          location.z = Number(value);
+          break;
+      }
+    }
+    if (Object.keys(location).length !== 0) data.location = location;
+    if (Object.keys(volume).length !== 0) data.volume = volume;
+    return data;
   }
 
   #commandHandler(player, command) {
@@ -287,6 +498,7 @@ class CustomCommand {
     const command = this.commands.find(
       (command) => command.name === argument[0]
     );
+    if (!command) this.#errorArgs(`There's no command '${argument[0]}'`);
 
     let helpMessage = `\\${command.name} ~ ${command.desc}\nArguments: ${command.name} `;
     for (let i = 0; i < command.args.length; i++) {
@@ -325,17 +537,19 @@ class CustomCommand {
         console.log(
           `Custom command executed with '/scriptevent' command as ${eventScript.sourceType}`
         );
-        if (eventScript.message.startsWith(this.prefix)) {
-          // Run the command
-          this.#commandHandler(
-            eventScript.sourceEntity,
-            eventScript.message.replace(this.prefix, "")
-          );
-        } else if (eventScript.message.startsWith(this.helpPrefix)) {
+        if (eventScript.message.startsWith(this.helpPrefix)) {
+          // console.log("2");
           // Run the command
           this.#helpHandler(
             eventScript.sourceEntity,
             eventScript.message.replace(this.helpPrefix, "")
+          );
+        } else {
+          // console.log("1");
+          // Run the command
+          this.#commandHandler(
+            eventScript.sourceEntity,
+            eventScript.message.replace(this.prefix, "")
           );
         }
       }
