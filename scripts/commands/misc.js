@@ -1,3 +1,4 @@
+import { world } from "@minecraft/server";
 import CustomCommand from "./command";
 import Print from "../lib/Print";
 
@@ -6,26 +7,8 @@ CustomCommand.addCommand(
   "Send pong! (Used to test if the script runs properly)",
   [],
   (player, ctx) => {
-    Print("Pong!");
-    console.log("Pong!");
-  }
-);
-
-CustomCommand.addCommand(
-  "hello",
-  "Send the response of greetings",
-  [
-    {
-      name: "name",
-      desc: "Name of the player (Default: player's name)",
-      type: "string",
-      default: "---",
-    },
-  ],
-  (player, ctx) => {
-    if (ctx.name === "---")
-      return Print(`Hello ${player.name ?? "<Anonymous>"}!`);
-    Print(`Hello ${ctx.name}!`);
+    player.tell("Pong!");
+    console.log("Pong!", player.name ?? player);
   }
 );
 
@@ -43,6 +26,7 @@ CustomCommand.addCommand(
       description: "The number",
       type: "number",
       options: {
+        float: false,
         min: 0,
         max: 5,
       },
@@ -50,6 +34,6 @@ CustomCommand.addCommand(
     },
   ],
   (player, ctx) => {
-    console.log("Test command", JSON.stringify(ctx));
+    console.log("Test command", player.name ?? player, JSON.stringify(ctx));
   }
 );
