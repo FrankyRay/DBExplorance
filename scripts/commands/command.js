@@ -2,10 +2,14 @@ import {
   world,
   system,
   MinecraftBlockTypes,
+  BlockType,
   MinecraftEffectTypes,
   ItemTypes,
+  ItemType,
+  Player,
 } from "@minecraft/server";
 import Print from "../lib/Print";
+import defaultOption from "./options";
 
 class CustomCommand {
   // Command prefix
@@ -18,9 +22,14 @@ class CustomCommand {
 
   // Argument type conversion function
   #argumentConvertType = {
-    string: (args, data) => this.#argumentStringType(args, data),
-    number: (args, data) => this.#argumentNumberType(args, data),
-    boolean: (args, data) => this.#argumentBooleanType(args, data),
+    string: (plr, args, data) => this.#argumentStringType(plr, args, data),
+    number: (plr, args, data) => this.#argumentNumberType(plr, args, data),
+    boolean: (plr, args, data) => this.#argumentBooleanType(plr, args, data),
+    object: (plr, args, data) => this.#argumentObjectType(plr, args, data),
+    block: (plr, args, data) => this.#argumentBlockType(plr, args, data),
+    item: (plr, args, data) => this.#argumentItemType(plr, args, data),
+    effect: (plr, args, data) => this.#argumentEffectType(plr, args, data),
+    location: (plr, args, data) => this,
   };
 
   constructor() {
@@ -56,12 +65,15 @@ class CustomCommand {
    * Parsing command into an array of command arguments
    * (Inspired by @FrostIce482)
    *
+   * @param {Player} player
+   * Player's class
+   *
    * @param {String} command
    * Raw command arguments
    *
    * @return {object} Object of command arguments
    */
-  #parseArguments(command) {
+  #parseArguments(player, command) {
     const groups = {
       "{": "}",
       "[": "]",
@@ -69,6 +81,7 @@ class CustomCommand {
     };
 
     let commandData = [],
+      argLocRot = [],
       commandArgs = {},
       arg = "",
       argIndex = 0,
@@ -89,8 +102,27 @@ class CustomCommand {
             this.#errorCommand(`Command ${arg} is not found`);
           commandArgs.command = arg;
           commandArgs.args = {};
+        } else if (
+          (commandData.args[argIndex].type == "location" &&
+            argLocRot.length < 3) ||
+          (commandData.args[argIndex].type == "rotation" &&
+            argLocRot.length < 2)
+        ) {
+          argLocRot.push(arg);
+          arg = "";
+          continue;
         } else if (argIndex >= commandData.args.length) {
           this.#errorCommand("Too many argument provided");
+        } else if (
+          commandData.args[argIndex].type == "location" ||
+          commandData.args[argIndex].type == "rotation"
+        ) {
+          commandArgs.args[commandData.args[argIndex].name] =
+            this.#argumentConvertType[commandData.args[argIndex].type](
+              argLocRot,
+              commandData.args[argIndex]
+            );
+          argIndex++;
         } else {
           commandArgs.args[commandData.args[argIndex].name] =
             this.#argumentConvertType[commandData.args[argIndex].type](
@@ -115,6 +147,17 @@ class CustomCommand {
         commandArgs.args = {};
       } else if (argIndex >= commandData.args.length) {
         this.#errorCommand("Too many argument provided");
+      } else if (
+        commandData.args[argIndex].type == "location" ||
+        commandData.args[argIndex].type == "rotation"
+      ) {
+        argLocRot.push(arg);
+        commandArgs.args[commandData.args[argIndex].name] =
+          this.#argumentConvertType[commandData.args[argIndex].type](
+            argLocRot,
+            commandData.args[argIndex]
+          );
+        argIndex++;
       } else {
         commandArgs.args[commandData.args[argIndex].name] =
           this.#argumentConvertType[commandData.args[argIndex].type](
@@ -131,19 +174,69 @@ class CustomCommand {
           this.#errorCommand(
             `Argument ${commandData.args[i].name} is required`
           );
-        commandArgs.args[commandData.args[i].name] =
-          commandData.args[i].default;
+        commandArgs.args[commandData.args[i].name] = this.#argumentConvertType[
+          commandData.args[i].type
+        ](commandData.args[i].default);
       }
     }
     return commandArgs;
   }
 
-  #argumentStringType(arg, data) {
+  /**
+   * Argument string type converter
+   *
+   * @param {Player} plr
+   * Player's class
+   *
+   * @param {string} arg
+   * Arguments
+   *
+   * @param {object} data
+   * Command argument's data
+   *
+   * @returns {string}
+   */
+  #argumentStringType(plr, arg, data) {
     if (arg.startsWith('"') && arg.endsWith('"')) arg = arg.slice(1, -1);
+
+    if (
+      arg.length < (data.option?.length?.min ?? defaultOption.string.length.min)
+    ) {
+      this.#errorCommand(
+        `Argument ${data.name} string's length is too short (${arg.length} < ${
+          data.option?.length?.min ?? defaultOption.string.length.min
+        })`
+      );
+    }
+
+    if (
+      arg.length > (data.option?.length?.max ?? defaultOption.string.length.max)
+    ) {
+      this.#errorCommand(
+        `Argument ${data.name} string's length is too long (${arg.length} > ${
+          data.option?.length?.max ?? defaultOption.string.length.max
+        })`
+      );
+    }
+
     return arg;
   }
 
-  #argumentNumberType(arg, data) {
+  /**
+   * Argument number type converter
+   *
+   * @param {Player} plr
+   * Player's class
+   *
+   * @param {string} arg
+   * Arguments
+   *
+   * @param {object} data
+   * Command argument's data
+   *
+   * @returns {number}
+   */
+  #argumentNumberType(plr, arg, data) {
     const number = Number(arg);
     const numInt = Math.round(number);
 
@@ -155,13 +248,16 @@ class CustomCommand {
       });
 
     // ERROR: Float instead of integer
-    if (!(data.options?.float ?? true) && number !== numInt)
+    if (
+      !(data.options?.float ?? defaultOption.number.float) &&
+      number !== numInt
+    )
       this.#errorCommand(
         `Argument ${data.name} type is float instead of integer`
       );
 
     // ERROR: Number < min
-    if (number < (data.options?.min ?? -2_147_483_648))
+    if (number < (data.options?.range?.min ?? defaultOption.number.range.min))
       this.#errorCommand(
         `Argument ${data.name} value is too small (${number} < ${
           data.options?.min ?? -2_147_483_648
@@ -173,7 +269,7 @@ class CustomCommand {
       );
 
     // ERROR: Number > max
-    if (number > (data.options?.max ?? 2_147_483_647))
+    if (number > (data.options?.range?.max ?? defaultOption.number.range.max))
       this.#errorCommand(
         `Argument ${data.name} value is too big (${number} > ${
           data.options?.max ?? 2_147_483_647
@@ -183,10 +279,27 @@ class CustomCommand {
           values: [number, data.options?.max ?? 2_147_483_647],
         }
       );
-    return number;
+
+    if (data.option?.stringify === undefined)
+      return defaultOption.number.stringify ? "" + number : number;
+    return data.option.stringify ? "" + number : number;
   }
 
-  #argumentBooleanType(arg, data) {
+  /**
+   * Argument boolean type converter
+   *
+   * @param {Player} plr
+   * Player's class
+   *
+   * @param {string} arg
+   * Arguments
+   *
+   * @param {object} data
+   * Command argument's data
+   *
+   * @returns {boolean}
+   */
+  #argumentBooleanType(plr, arg, data) {
     if (arg !== "true" || arg !== "false")
       this.#errorCommand(`Argument ${data.name} has invalid boolean value`, {
         key: "commands.generic.boolean.invalid",
@@ -194,6 +307,93 @@ class CustomCommand {
       });
     return arg === "true";
   }
+
+  /**
+   * Argument object type converter
+   *
+   * @param {Player} plr
+   * Player's class
+   *
+   * @param {string} arg
+   * Arguments
+   *
+   * @param {object} data
+   * Command argument's data
+   *
+   * @returns {object}
+   */
+  #argumentObjectType(plr, arg, data) {
+    let argsData = {};
+    try {
+      argsData = JSON.parse(arg);
+    } catch (err) {
+      this.#errorCommand(`Error ${data.name}: ${err}\n${err.stack}`);
+    }
+    return argsData;
+  }
+
+  /**
+   * Argument block type converter (BlockType class)
+   *
+   * @param {Player} plr
+   * Player's class
+   *
+   * @param {string} arg
+   * Arguments
+   *
+   * @param {object} data
+   * Command argument's data
+   *
+   * @returns {BlockType}
+   */
+  #argumentBlockType(plr, arg, data) {
+    const block = MinecraftBlockTypes.get(arg);
+    if (!block)
+      this.#errorCommand(`Argument ${data.name} has unknown block (${arg})`);
+    return block;
+  }
+
+  /**
+   * Argument item type converter (ItemType class)
+   *
+   * @param {Player} plr
+   * Player's class
+   *
+   * @param {string} arg
+   * Arguments
+   *
+   * @param {object} data
+   * Command argument's data
+   *
+   * @returns {ItemType}
+   */
+  #argumentItemType(plr, arg, data) {
+    const item = ItemTypes.get(arg);
+    if (!item)
+      this.#errorCommand(`Argument ${data.name} has unknown item (${arg})`);
+    return item;
+  }
+
+  /**
+   * Argument location type converter
+   *
+   * @param {Player} plr
+   * Player's class
+   *
+   * @param {string[]} arg
+   * Arguments
+   *
+   * @param {object} data
+   * Command argument's data
+   *
+   * @returns {number[]}
+   */
+  #argumentLocationType(plr, arg, data) {}
+
+  // #argumentEffectType(plr, arg, data) {
+  //   const effect = MinecraftEffectTypes.forEach();
+  //   return effect;
+  // }
 
   /**
    * Send error output to player's chat and console.
@@ -242,7 +442,10 @@ class CustomCommand {
   #executeCommand(player, message) {
     let data;
     if (message.startsWith(this.prefix))
-      data = this.#parseArguments(message.substring(this.prefix.length));
+      data = this.#parseArguments(
+        player,
+        message.substring(this.prefix.length)
+      );
 
     this.#commands
       .find((command) => command.name == data.command)

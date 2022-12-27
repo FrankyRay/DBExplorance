@@ -32,8 +32,19 @@ CustomCommand.addCommand(
       },
       default: 0,
     },
+    {
+      name: "eff",
+      description: "The effect id",
+      type: "effect",
+      default: "minecraft:regeneration",
+    },
   ],
   (player, ctx) => {
-    console.log("Test command", player.name ?? player, JSON.stringify(ctx));
+    console.log(
+      "Test command",
+      player.name ?? player,
+      JSON.stringify(ctx),
+      ctx.args.eff.id
+    );
   }
 );
