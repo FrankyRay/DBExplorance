@@ -1,2 +1,32 @@
 Regex: Target Selector
 /([a-z]*)=(((\")?[\w\s]+(\")?)|(\{.*?\}))/g
+
+Local Coordinate
+pos {x,y,z}
+rot { yas, pitch }
+
+xa = {
+-sin(yaw-90) 
+0
+cos(yaw-90) 
+}
+
+ya = {
+sin(yaw) cos(pitch-90)
+-sin(pitch-90)
+-cos(yaw) cos(pitch-90)
+}
+
+za = {
+-sin(yaw) cos(pitch)
+-sin(pitch)
+cos(yaw) cos(pitch)
+}
+
+tp ^2 ^3 ^4
+
+xa * 2
+ya * 3
+za * 4
+
+npos = pos + xa + ya + za

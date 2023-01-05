@@ -1,14 +1,17 @@
+// TODO: Not implemented
 import { world } from "@minecraft/server";
-import CustomCommand from "./command";
+import CustomCommand from "./CustomCommand";
 
-function commandItem(player, args) {
-  console.log(args);
+function commandItem(player, data) {
+  console.log(data);
 }
 
-CustomCommand.addCommand(
-  "item",
-  "Manipulate or copy items in the inventories of blocks (chest, furnaces, etc.) or entities (players or mobs).",
-  [
+CustomCommand.addCommand({
+  name: "item",
+  description:
+    "Manipulate or copy items in the inventories of blocks (chest, furnaces, etc.) or entities (players or mobs).",
+  operator: true,
+  arguments: [
     {
       name: "opt",
       description: "Option of item's command.",
@@ -17,7 +20,7 @@ CustomCommand.addCommand(
         {
           name: "give",
           description: "Give the item to entities (players or mobs).",
-          subcommands: [
+          subcommand: [
             {
               name: "target",
               description: "The entity to which the item is to be assigned.",
@@ -31,7 +34,7 @@ CustomCommand.addCommand(
         {
           name: "spawn",
           description: "Spawn the item at specific location.",
-          subcommands: [
+          subcommand: [
             {
               name: "position",
               description: "The location where the item will appear.",
@@ -51,6 +54,7 @@ CustomCommand.addCommand(
       description: "The item's amount.",
       type: "number",
       options: {
+        float: false,
         min: 0,
         max: 64,
       },
@@ -63,5 +67,5 @@ CustomCommand.addCommand(
       default: {},
     },
   ],
-  commandItem
-);
+  callback: commandItem,
+});

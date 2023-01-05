@@ -1,7 +1,7 @@
-// @ts-check
+// @ts-nocheck
 import { world, ItemStack, Items } from "@minecraft/server";
-import Print from "../lib/Print.js";
-import { AddEnchantment } from "../lib/Enchantments.js";
+import Print from "../../scripts/lib/Print.js";
+import { AddEnchantment } from "../../scripts/lib/Enchantments.js";
 
 const ExampleComponentLib = {
   Data: 0,

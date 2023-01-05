@@ -1,9 +1,4 @@
 const commandOptions = {
-  // Custom command prefix.
-  prefix: "\\",
-  // Custom help command prefix.
-  helpPrefix: "?",
-
   string: {
     // Allow escape character functional.
     // TODO: Not implemented.
@@ -11,7 +6,7 @@ const commandOptions = {
     // String length.
     length: {
       min: 0,
-      max: 2147483647, // (2^31 - 1) ~ Basically infinity.
+      max: Infinity, // Basically infinity.
     },
   },
 
@@ -51,14 +46,15 @@ const commandOptions = {
     vanillaOnly: false,
     // Allow creative item to non-op player
     creativeMode: true,
+
+    /* Output */
     // Return item's ID instead of ItemType class.
     stringify: false,
   },
 
   location: {
     // Allow relative coordinate (~0).
-    // TODO: Not implemented.
-    relativeValue: false,
+    relativeValue: true,
     // Allow local coordinate (^0).
     // TODO: Not implemented.
     localValue: false,
@@ -68,10 +64,10 @@ const commandOptions = {
       y: true,
       z: true,
     },
-    // Set '0' to disabled coordinate axis. Otherwise, not specified.
-    zeroDisabledAxis: true,
+
+    /* Output */
     // Type of data returned.
-    // "Vector3", "Location", "BlockLocation".
+    // "Vector3", "Vector", "Location", "BlockLocation".
     outputData: "Vector3",
     // Return string instead of "outputData" type.
     stringify: false,

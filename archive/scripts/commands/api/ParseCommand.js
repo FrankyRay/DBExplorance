@@ -1,6 +1,7 @@
 import { Player } from "@minecraft/server";
 import CommandException from "./Exceptions";
 import Options from "./Options";
+import { commandList } from "./Command";
 // Argument Type Checker
 import stringArgumentType from "./arguments/StringArgumentType";
 import numberArgumentType from "./arguments/NumberArgumentType";
@@ -19,8 +20,6 @@ const argumentType = {
   item: itemArgumentType,
 };
 
-let commandsList = {};
-
 /**
  * Parsing command into an array of command arguments
  * (Inspired by @FrostIce482)
@@ -33,7 +32,7 @@ let commandsList = {};
  *
  * @return {object} Object of command arguments
  */
-function parseCommand(player, command) {
+export default function parseCommand(player, command) {
   const groups = {
     "{": "}",
     "[": "]",
@@ -59,7 +58,7 @@ function parseCommand(player, command) {
       if (!argValue) continue;
       if (Object.keys(commandData).length === 0) {
         commandData =
-          commandsList[argValue] ??
+          commandList[argValue] ??
           CommandException(player, `Command ${arg} is not found`);
         commandArgs.command = argValue;
         commandArgs.args = {};
@@ -78,18 +77,48 @@ function parseCommand(player, command) {
         commandArgs.args[commandData.args[argIndex].name] = argumentType[
           commandData.args[argIndex].type
         ](data, commandData.args[argIndex], player);
-        argIndex++;
       } else {
         commandArgs.args[commandData.args[argIndex].name] = argumentType[
           commandData.args[argIndex].type
         ](argValue, commandData.args[argIndex], player);
-        argIndex++;
       }
 
-      arg = "";
+      argIndex++;
+      argValue = "";
       continue;
     }
+
+    if (!argValue) return commandArgs;
+    if (Object.keys(commandData).length === 0) {
+      commandData =
+        commandList[argValue] ??
+        CommandException(player, `Command ${arg} is not found`);
+      commandArgs.command = argValue;
+      commandArgs.args = {};
+    } else if (argIndex >= commandData.args.length) {
+      CommandException(player, "Too many argument provided");
+    } else if (commandData.args[argIndex].type === "location") {
+      const [isDone, data] = locationCheck(
+        argLocRot,
+        argValue,
+        commandData.args[argIndex]
+      );
+
+      argLocRot = data;
+      if (!isDone) CommandException(player, "Location still not completed");
+
+      commandArgs.args[commandData.args[argIndex].name] = argumentType[
+        commandData.args[argIndex].type
+      ](data, commandData.args[argIndex], player);
+      argIndex++;
+    } else {
+      commandArgs.args[commandData.args[argIndex].name] = argumentType[
+        commandData.args[argIndex].type
+      ](argValue, commandData.args[argIndex], player);
+      argIndex++;
+    }
   }
+  return commandArgs;
 }
 
 /**

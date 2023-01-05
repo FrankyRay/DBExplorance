@@ -1,6 +1,7 @@
 {
   "name": "item",
   "description": "Manipulate or copy items in the inventories of blocks (chest, furnaces, etc.) or entities (players or mobs).",
+  "operator": true,
   "args": [
     {
       "name": "opt",
@@ -56,5 +57,6 @@
       "type": "object",
       "default": {}
     }
-  ]
+  ],
+  "callback": "function"
 }

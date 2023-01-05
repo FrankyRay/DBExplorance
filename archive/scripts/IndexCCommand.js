@@ -1,15 +1,16 @@
-// @ts-check
+// @ts-nocheck
+// All import change ("../" => "../../scrips/")
 import { Items, ItemStack, world } from "@minecraft/server";
 import { ModalFormData } from "@minecraft/server-ui";
-import CancelReason from "../lib/CancelationReason.js";
-import Print from "../lib/Print.js";
-import setTickTimeout from "../lib/TickTimeout.js";
+import CancelReason from "../../scripts/lib/CancelationReason.js";
+import Print from "../../scripts/lib/Print.js";
+import setTickTimeout from "../../scripts/lib/TickTimeout.js";
 // Command File Extended
-import CmdComp from "../api/CustomCommand/CmdComponent.js";
-import FunctionCommand from "../api/CustomCommand/Functions.js";
-import Item from "../api/CustomCommand/BetterCommand/Item";
-import Math from "../api/CustomCommand/Math.js";
-import Rawtext from "../api/CustomCommand/BetterCommand/Rawtext.js";
+import CmdComp from "../../scripts/api/CustomCommand/CmdComponent.js";
+import FunctionCommand from "../../scripts/api/CustomCommand/Functions.js";
+import Item from "../../scripts/api/CustomCommand/BetterCommand/Item";
+import Math from "../../scripts/api/CustomCommand/Math.js";
+import Rawtext from "../../scripts/api/CustomCommand/BetterCommand/Rawtext.js";
 
 // Prefix command
 const prefix = "\\";
