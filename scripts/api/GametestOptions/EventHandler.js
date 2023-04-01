@@ -146,9 +146,7 @@ EVENT.entityHurt.subscribe((eventEntityHurt) => {
   const {
     cause,
     damage,
-    damagingEntity: { id: entDamageID, nameTag: entDamageNameTag },
     hurtEntity: { id: entHurtID, nameTag: entHurtNameTag },
-    projectile: { id: projectileID },
   } = eventEntityHurt;
   Print(
     `[LOG][EVENT]-(EntityHurt)\n  Cause: ${cause.toString()}\n  Damage: ${damage}\n  DamagingEntity: ${entDamageID} ~ ${entDamageNameTag}\n  HurtEntity: ${entHurtID} ~ ${entHurtNameTag}\n  Projectile: ${projectileID}`

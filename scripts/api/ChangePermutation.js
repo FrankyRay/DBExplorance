@@ -1,4 +1,4 @@
-import { BlockRaycastOptions, world } from "@minecraft/server";
+import { world } from "@minecraft/server";
 import { ModalFormData } from "@minecraft/server-ui";
 import Print from "../lib/Print";
 

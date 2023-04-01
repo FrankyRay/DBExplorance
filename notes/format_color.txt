@@ -1,0 +1,12 @@
+Formatting Colors
+
+[h] Quartz
+[i] Iron
+[j] Netherite
+[m] Redstone
+[n] Copper
+[p] Gold
+[q] Emerald
+[s] Diamond
+[t] Lapis Lazuli
+[u] Amethyst

@@ -1,0 +1,26 @@
+Personal Idea
+/creativeitem - Give all creative item inside shulker box
+/tp - Custom TP
+/warp
+/home
+/worldedit
+---
+1st Link:
+https://www.curseforge.com/minecraft/mc-mods/morecommands
+
+Command:
+/calc
+/rotate
+/cannon?
+/kit?
+/explode
+/fakeplayer
+/fireball?
+/fly
+/gm<c|s|a|sp>
+/invsee
+/rename
+/spawner?
+/whereami?
+---
+

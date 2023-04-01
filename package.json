@@ -3,9 +3,10 @@
     "@minecraft/server-admin": "^1.0.0-beta.11940b24",
     "@minecraft/server-gametest": "^1.0.0-beta.11940b24",
     "@minecraft/server-net": "^1.0.0-beta.11940b24",
-    "@minecraft/server-ui": "^1.0.0-beta.11940b24"
+    "@minecraft/server-ui": "^1.0.0-beta.11940b24",
+    "ws": "^8.12.0"
   },
   "devDependencies": {
-    "@minecraft/server": "^1.1.0-beta.1.19.60-preview.24"
+    "@minecraft/server": "^1.1.0-beta.1.19.70-preview.22"
   }
 }

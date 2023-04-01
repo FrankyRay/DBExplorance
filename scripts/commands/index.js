@@ -1,6 +1,8 @@
 import CustomCommand from "./CustomCommand";
-// import "./misc";
-// import "./item";
+import "./form";
+import "./test";
+import "./item";
+import "./explode";
 
 CustomCommand.addCommand({
   name: "test",

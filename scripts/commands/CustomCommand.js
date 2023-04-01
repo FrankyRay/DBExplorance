@@ -3,17 +3,21 @@ import {
   system,
   MinecraftBlockTypes,
   ItemTypes,
-  BlockLocation,
-  Location,
   Vector,
+  MinecraftEffectTypes,
+  GameMode,
   //* Used for docs and auto-completion
   Player,
   MessageSourceType,
   BlockType,
   ItemType,
-  Vector3,
-  XYRotation,
+  EffectType,
+  EnchantmentType,
+  PlayerIterator,
+  EntityIterator,
+  BlockAreaSize,
 } from "@minecraft/server";
+import LocalCoordinate from "./LocalCoordinate";
 
 class CustomCommand {
   // Custom command prefix.
@@ -30,7 +34,7 @@ class CustomCommand {
       // String length.
       length: {
         min: 0,
-        max: Infinity, // Basically infinity.
+        max: Infinity,
       },
     },
 
@@ -75,11 +79,10 @@ class CustomCommand {
     },
 
     location: {
-      // Allow relative coordinate (~0).
+      // Allow relative coordinate/tilde notation (~0).
       relativeValue: true,
-      // Allow local coordinate (^0).
-      // TODO: Not implemented.
-      localValue: false,
+      // Allow local coordinate/caret notation (^0).
+      localValue: true,
       // Enable/disable coordinate axis.
       coordinateAxis: {
         x: true,
@@ -90,20 +93,32 @@ class CustomCommand {
       // Otherwise, use player's current location.
       zeroDefaultValue: false,
       // Type of data returned.
-      // "Vector3", "Vector", "Location", "BlockLocation".
+      // "Vector3", "Vector", or "String".
       outputData: "Vector3",
-      // Return string instead of "outputData" type.
-      stringify: false,
     },
 
     rotation: {
       // Allow relative rotation (~).
       relativeValue: false,
-      // Return string instead of ItemType class.
+      // Return string instead of object.
       stringify: false,
     },
 
-    selector: {},
+    selector: {
+      // Allow only player can be target.
+      playerOnly: false,
+      // Limit only one target.
+      limitTarget: false,
+      // Added default target selector arguments/query.
+      defaultSelector: {},
+      // Overwrite command's target selector with default target selector.
+      overwrite: false,
+      // Type of data returned.
+      // "Iterator": Returned as PlayerIterator/EntityIterator.
+      // "Query": Returned as EntityQueryOptions.
+      // "String": Returned as plain string.
+      outputData: "Iterator",
+    },
   };
 
   // Command list
@@ -111,10 +126,10 @@ class CustomCommand {
     ping: {
       name: "ping",
       description: "Say pong! (To check if the custom command is working)",
-      operator: true,
       arguments: [],
       callback: (player, data) => {
-        if (player instanceof Player) player.tell("Pong!");
+        if (player instanceof Player)
+          player.tell(`Pong! (OP: ${player.isOp()})`);
         else world.say("Pong!");
         console.log("Pong! Custom command works properly");
       },
@@ -129,8 +144,11 @@ class CustomCommand {
     object: (v, a, p) => this.#objectArgumentType(v, a, p),
     block: (v, a, p) => this.#blockArgumentType(v, a, p),
     item: (v, a, p) => this.#itemArgumentType(v, a, p),
+    effect: (v, a, p) => this.#effectArgumentType(v, a, p),
+    enchantment: (v, a, p) => this.#enchantmentArgumentType(v, a, p),
     location: (v, a, p) => this.#locationArgumentType(v, a, p),
     rotation: (v, a, p) => this.#rotationArgumentType(v, a, p),
+    option: (v, a, p) => this.#optionArgumentType(v, a, p),
   };
 
   constructor() {
@@ -213,7 +231,7 @@ class CustomCommand {
             );
 
           commandArgs.command = argValue;
-          commandArgs.args = {};
+          commandArgs.arguments = {};
         } else if (argIndex >= commandData.arguments.length) {
           this.#commandException(player, "Too many argument provided");
         } else if (commandData.arguments[argIndex].type === "location") {
@@ -228,7 +246,7 @@ class CustomCommand {
           if (!isDone) continue;
           argLocRot = {};
 
-          commandArgs.args[commandData.arguments[argIndex].name] =
+          commandArgs.arguments[commandData.arguments[argIndex].name] =
             this.#argumentType[commandData.arguments[argIndex].type](
               data,
               commandData.arguments[argIndex],
@@ -247,15 +265,25 @@ class CustomCommand {
           if (!isDone) continue;
           argLocRot = {};
 
-          commandArgs.args[commandData.arguments[argIndex].name] =
+          commandArgs.arguments[commandData.arguments[argIndex].name] =
             this.#argumentType[commandData.arguments[argIndex].type](
               data,
               commandData.arguments[argIndex],
               player
             );
           argIndex++;
+        } else if (commandData.arguments[argIndex].type === "option") {
+          const [value, subArgument] = this.#optionArgumentType(
+            argValue,
+            commandData.arguments[argIndex],
+            player
+          );
+
+          argIndex++;
+          commandData.arguments.splice(argIndex, 0, ...subArgument);
+          commandArgs.arguments[commandData.arguments[argIndex].name] = value;
         } else {
-          commandArgs.args[commandData.arguments[argIndex].name] =
+          commandArgs.arguments[commandData.arguments[argIndex].name] =
             this.#argumentType[commandData.arguments[argIndex].type](
               argValue,
               commandData.arguments[argIndex],
@@ -292,7 +320,7 @@ class CustomCommand {
           );
 
         commandArgs.command = argValue;
-        commandArgs.args = {};
+        commandArgs.arguments = {};
       } else if (argIndex >= commandData.arguments.length) {
         this.#commandException(player, "Too many argument provided");
       } else if (commandData.arguments[argIndex].type === "location") {
@@ -305,7 +333,7 @@ class CustomCommand {
         if (!isDone)
           this.#commandException(player, "Location still not completed");
 
-        commandArgs.args[commandData.arguments[argIndex].name] =
+        commandArgs.arguments[commandData.arguments[argIndex].name] =
           this.#argumentType[commandData.arguments[argIndex].type](
             data,
             commandData.arguments[argIndex],
@@ -323,15 +351,25 @@ class CustomCommand {
         if (!isDone)
           this.#commandException(player, "Rotation still not completed");
 
-        commandArgs.args[commandData.arguments[argIndex].name] =
+        commandArgs.arguments[commandData.arguments[argIndex].name] =
           this.#argumentType[commandData.arguments[argIndex].type](
             data,
             commandData.arguments[argIndex],
             player
           );
         argIndex++;
+      } else if (commandData.arguments[argIndex].type === "option") {
+        const [value, subArgument] = this.#optionArgumentType(
+          argValue,
+          commandData.arguments[argIndex],
+          player
+        );
+
+        argIndex++;
+        commandData.arguments.splice(argIndex, 0, ...subArgument);
+        commandArgs.arguments[commandData.arguments[argIndex].name] = value;
       } else {
-        commandArgs.args[commandData.arguments[argIndex].name] =
+        commandArgs.arguments[commandData.arguments[argIndex].name] =
           this.#argumentType[commandData.arguments[argIndex].type](
             argValue,
             commandData.arguments[argIndex],
@@ -343,13 +381,13 @@ class CustomCommand {
 
     //? Insert the default value for the unspecified argument
     for (let i = argIndex; i < commandData.arguments.length; i++) {
-      if (!commandData.arguments[i].default)
+      if (commandData.arguments[i].default === undefined)
         this.#commandException(
           player,
           `Missing argument ${commandData.arguments[i].name}`
         );
 
-      commandArgs.args[commandData.arguments[argIndex].name] =
+      commandArgs.arguments[commandData.arguments[i].name] =
         commandData.arguments[i].default;
     }
     return commandArgs;
@@ -360,6 +398,7 @@ class CustomCommand {
    * @param {object} data
    * @param {string} value
    * @param {object} argument
+   * @return {[boolean, object]}
    */
   #locationCheck(data, value, argument) {
     const axisX =
@@ -487,7 +526,7 @@ class CustomCommand {
     }
 
     //! ERROR: Value type is float instead of integer.
-    if (isFloat && number !== Math.round(number)) {
+    if (!isFloat && number !== Math.round(number)) {
       this.#commandException(
         player,
         `Argument ${argument.name} type is float instead of integer`
@@ -570,11 +609,45 @@ class CustomCommand {
     } catch (error) {
       this.#commandException(
         player,
-        `Failed to parse the object at argument ${argument.name}`
+        `Failed to parse the object at argument ${argument.name}`,
+        "commands.tellraw.jsonStringException",
+        []
       );
     }
 
     return stringify ? JSON.stringify(object) : object;
+  }
+
+  /**
+   * Option argument type checker
+   *
+   * @param {string} value
+   * Argument value
+   *
+   * @param {object} argument
+   * Argument data
+   *
+   * @param {Player|MessageSourceType} player
+   * Player class or MessageSourceType enum
+   *
+   * @return {object|string} Object (string if stringify == true)
+   */
+  #optionArgumentType(value, argument, player) {
+    const choices = argument.choices;
+
+    //! ERROR: Not a valid options
+    if (!choices.map((choice) => choice.name).includes(value)) {
+      this.#commandException(
+        player,
+        `Option "${value}" is not valid choices`,
+        "commands.generic.parameter.invalid",
+        [value]
+      );
+    }
+
+    const subArgument =
+      choices.find((choice) => choice.name === value).subargument ?? [];
+    return [value, subArgument];
   }
 
   /**
@@ -602,7 +675,12 @@ class CustomCommand {
 
     //! ERROR: Block is not found.
     if (!block) {
-      this.#commandException(player, `Block '${value}' is not found`);
+      this.#commandException(
+        player,
+        `Block '${value}' is not found`,
+        "commands.give.block.notFound",
+        [value]
+      );
     }
 
     //! ERROR: Block must be vanilla.
@@ -615,15 +693,15 @@ class CustomCommand {
 
     //! ERROR: Creative block to non-op player.
     // TODO: Not implemented.
-    if (
-      creativeBlock.includes(value.replace("minecraft:", "")) &&
-      !player.isOp()
-    ) {
-      this.#commandException(
-        player,
-        `You have no permission to use block '${value}'`
-      );
-    }
+    // if (
+    //   creativeBlock.includes(value.replace("minecraft:", "")) &&
+    //   !player.isOp()
+    // ) {
+    //   this.#commandException(
+    //     player,
+    //     `You have no permission to use block '${value}'`
+    //   );
+    // }
 
     return stringify ? block.id : block;
   }
@@ -653,7 +731,12 @@ class CustomCommand {
 
     //! ERROR: Item is not found.
     if (!item) {
-      this.#commandException(player, `Item '${value}' is not found`);
+      this.#commandException(
+        player,
+        `Item '${value}' is not found`,
+        "commands.give.item.notFound",
+        [value]
+      );
     }
 
     //! ERROR: Item must be vanilla.
@@ -666,17 +749,151 @@ class CustomCommand {
 
     //! ERROR: Creative item to non-op player.
     // TODO: Not implemented.
-    if (
-      creativeItem.includes(value.replace("minecraft:", "")) &&
-      !player.isOp()
-    ) {
+    // if (
+    //   creativeItem.includes(value.replace("minecraft:", "")) &&
+    //   !player.isOp()
+    // ) {
+    //   this.#commandException(
+    //     player,
+    //     `You have no permission to use item '${value}'`
+    //   );
+    // }
+
+    return stringify ? item.id : item;
+  }
+
+  /**
+   * Effect argument type checker
+   *
+   * @param {string} value
+   * Argument value
+   *
+   * @param {object} argument
+   * Argument data
+   *
+   * @param {Player|MessageSourceType} player
+   * Player class or MessageSourceType enum
+   *
+   * @return {EffectType|string} EffectType (effect id if stringify == true)
+   */
+  #effectArgumentType(value, argument, player) {
+    const typeEffect = {
+      absorbtion: "absorbtion",
+      bad_omen: "badOmen",
+      blindness: "blindness",
+      conduit_power: "conduitPower",
+      darkness: "darkness",
+      dolphin_grace: "dolphinGrace",
+      fatal_poison: "fatalPoison",
+      fire_resistance: "fireResistance",
+      haste: "haste",
+      health_boost: "healthBoost",
+      hunger: "hunger",
+      instant_damage: "instantDamage",
+      instant_health: "instantHealth",
+      invisibility: "invisibility",
+      jump_boost: "jumpBoost",
+      levitation: "levitation",
+      mining_fatigue: "miningFatigue",
+      nausea: "nausea",
+      night_vision: "nightVision",
+      poison: "poison",
+      regeneration: "regeneration",
+      resistance: "resistance",
+      saturation: "saturation",
+      slow_falling: "slowFalling",
+      slowness: "slowness",
+      speed: "speed",
+      strength: "strength",
+      village_hero: "villageHero",
+      water_breathing: "waterBreathing",
+      weakness: "weakness",
+      wither: "wither",
+    };
+
+    //! ERROR: Not a valid effect
+    if (!Object.keys(typeEffect).includes(value.replace("minecraft:", ""))) {
       this.#commandException(
         player,
-        `You have no permission to use item '${value}'`
+        `Argument ${argument.name} has invalid effect (${value})`,
+        "commands.effect.notFound",
+        [value]
       );
     }
 
-    return stringify ? item.id : item;
+    return MinecraftEffectTypes[typeEffect[value.replace("minecraft:", "")]];
+  }
+
+  /**
+   * Enchantment argument type checker
+   *
+   * @param {string} value
+   * Argument value
+   *
+   * @param {object} argument
+   * Argument data
+   *
+   * @param {Player|MessageSourceType} player
+   * Player class or MessageSourceType enum
+   *
+   * @return {EnchantmentType|string} EnchantmentType (enchantment id if stringify == true)
+   */
+  #enchantmentArgumentType(value, argument, player) {
+    const typeEnchantment = {
+      aqua_affinity: "aquaAffinity",
+      bane_of_arthropoth: "baneOfArthropoth",
+      blast_protection: "blastProtection",
+      channeling: "channeling",
+      curse_of_binding: "curseOfBinding",
+      curse_of_vanishing: "curseOfVanishing",
+      depth_strider: "depthStrider",
+      efficiency: "efficiency",
+      feather_falling: "featherFalling",
+      fire_aspect: "fireAspect",
+      flame: "flame",
+      fortune: "fortune",
+      frost_walker: "frostWalker",
+      impaling: "impaling",
+      infinity: "infinity",
+      knockback: "knockback",
+      looting: "looting",
+      loyalty: "loyalty",
+      luck_of_the_sea: "luckOfTheSea",
+      lure: "lure",
+      mending: "mending",
+      multishot: "multishot",
+      piercing: "piercing",
+      power: "power",
+      projectile_protection: "projectileProtection",
+      protection: "protection",
+      punch: "punch",
+      quick_charge: "quickCharge",
+      respiration: "respiration",
+      riptide: "riptide",
+      sharpness: "sharpness",
+      silk_touch: "silkTouch",
+      smite: "smite",
+      soul_speed: "soulSpeed",
+      swift_sneak: "swiftSneak",
+      thorns: "thorns",
+      unbreaking: "unbreaking",
+    };
+
+    //! ERROR: Not a valid enchantment
+    if (
+      !Object.keys(typeEnchantment).includes(value.replace("minecraft:", ""))
+    ) {
+      this.#commandException(
+        player,
+        `Argument ${argument.name} has invalid enchantment (${value})`,
+        "commands.enchant.notFound",
+        [value]
+      );
+    }
+
+    return MinecraftEffectTypes[
+      typeEnchantment[value.replace("minecraft:", "")]
+    ];
   }
 
   /**
@@ -691,7 +908,7 @@ class CustomCommand {
    * @param {Player|MessageSourceType} player
    * Player class or MessageSourceType enum
    *
-   * @return {BlockLocation|Location|Vector|Vector3|string} One of those 3 location class or object (string if stringify == true)
+   * @return {BlockLocation|Location|Vector|import("@minecraft/server").Vector3|string} One of those 3 location class or object (string if stringify == true)
    */
   #locationArgumentType(value, argument, player) {
     const relativeValue =
@@ -719,6 +936,22 @@ class CustomCommand {
           []
         );
 
+    let local = false;
+    if (
+      value.x.startsWith("^") ||
+      value.y.startsWith("^") ||
+      value.z.startsWith("^")
+    ) {
+      if (localValue) {
+        local = true;
+        rawLocation = this.#localLocationCalc(value, argument, player);
+      } else
+        this.#commandException(
+          player,
+          `Argument ${argument.name} cannot use local coordinate`
+        );
+    }
+
     for (const axis of Object.keys(rawLocation)) {
       if (!value[axis]) continue;
 
@@ -730,12 +963,11 @@ class CustomCommand {
           );
         rawLocation[axis] =
           player.location[axis] +
-          Number(value.substring(1) !== "" ? value.substring(1) : 1);
-      } else if (value[axis].startsWith("^")) {
-        this.#commandException(
-          player,
-          "Any location argument type cannot use local coordinate for now"
-        );
+          Number(
+            value[axis].substring(1) !== "" ? value[axis].substring(1) : 0
+          );
+      } else if (local) {
+        continue;
       } else {
         rawLocation[axis] = Number(value[axis]);
       }
@@ -743,12 +975,6 @@ class CustomCommand {
 
     let newLocation;
     switch (outputData) {
-      case "Location":
-        newLocation = new Location(...Object.values(rawLocation));
-        break;
-      case "BlockLocation":
-        newLocation = new BlockLocation(...Object.values(rawLocation));
-        break;
       case "Vector":
         newLocation = new Vector(...Object.values(rawLocation));
         break;
@@ -784,19 +1010,6 @@ class CustomCommand {
     for (const axis of Object.keys(newRotation)) {
       if (!value[axis]) continue;
 
-      //! ERROR: Rotation out of range
-      if (
-        (axis === "x" && (value[axis] < -180 || value[axis] > 180)) ||
-        (axis === "y" && (value[axis] < -90 || value[axis] > 90))
-      ) {
-        this.#commandException(
-          player,
-          `Rotation out of range (${axis.toUpperCase()} = ${value[axis]})`,
-          "commands.generic.rotationError",
-          []
-        );
-      }
-
       if (value[axis].startsWith("~")) {
         if (!relativeValue)
           this.#commandException(
@@ -809,9 +1022,627 @@ class CustomCommand {
       } else {
         newRotation[axis] = Number(value[axis]);
       }
+
+      //! ERROR: Rotation out of range
+      if (
+        (axis === "x" &&
+          (newRotation[axis] < -180 || newRotation[axis] > 180)) ||
+        (axis === "y" && (newRotation[axis] < -90 || newRotation[axis] > 90))
+      ) {
+        this.#commandException(
+          player,
+          `Rotation out of range (${axis.toUpperCase()}: ${newRotation[axis]})`,
+          "commands.generic.rotationError",
+          []
+        );
+      }
     }
 
     return stringify ? Object.values(newRotation).join(" ") : newRotation;
+  }
+
+  /**
+   * Rotation argument type checker
+   *
+   * @param {object} value
+   * Argument value
+   *
+   * @param {object} argument
+   * Argument data
+   *
+   * @param {Player|MessageSourceType} player
+   * Player class or MessageSourceType enum
+   *
+   * @return {PlayerIterator|EntityIterator|import("@minecraft/server").EntityQueryOptions|string} Iterator/EntityQueryOptions (string if stringify == true)
+   */
+  #selectorArgumentType(value, argument, player) {
+    const playerOnly =
+      argument.options?.playerOnly ?? this.#commandOptions.selector.playerOnly;
+    const limitTarget =
+      argument.options?.limitTarget ??
+      this.#commandOptions.selector.limitTarget;
+    const defaultSelector =
+      argument.options?.defaultSelector ??
+      this.#commandOptions.selector.defaultSelector;
+    const overwrite =
+      argument.options?.overwrite ?? this.#commandOptions.selector.overwrite;
+
+    if (!value.startsWith("@")) {
+      return world.getPlayers({
+        name: value.startsWith('"') ? value.slice(1, -1) : value,
+      });
+    }
+    const [target, args] = this.#parseSelector(player, value);
+
+    //! ERROR: Selector not player-only
+    if (
+      target == "@e" &&
+      (args.type !== "player" || !args.families.includes("player"))
+    ) {
+      this.#commandException(
+        player,
+        `Selector accept player-only`,
+        "commands.generic.targetNotPlayer",
+        []
+      );
+    }
+  }
+
+  //* Argument Expansion
+  /**
+   * Convert local coordinate into world coordinate
+   *
+   * @param {object} value
+   * Raw local coordinate
+   *
+   * @param {object} argument
+   * Argument data
+   *
+   * @param {Player} player
+   * Player class
+   *
+   * @return {object} World coordinate
+   */
+  #localLocationCalc(value, argument, player) {
+    if (typeof player === "string")
+      this.#commandException(
+        player,
+        `Local coordinate need player's location and rotation`
+      );
+
+    const zeroDefaultValue =
+      argument.options?.zeroDefaultValue ??
+      this.#commandOptions.location.zeroDefaultValue;
+
+    const { x: yaw, y: pitch } = player.getRotation();
+    const localCoordinate = {
+      x: value.x.startsWith("^")
+        ? value.x.substring(1) !== ""
+          ? Number(value.x.substring(1))
+          : 0
+        : this.#commandException(
+            player,
+            `Cannot mix world & local coordinates (everything must either use ^ or not)`
+          ),
+      y: value.y.startsWith("^")
+        ? value.y.substring(1) !== ""
+          ? Number(value.y.substring(1))
+          : 0
+        : this.#commandException(
+            player,
+            `Cannot mix world & local coordinates (everything must either use ^ or not)`
+          ),
+      z: value.z.startsWith("^")
+        ? value.z.substring(1) !== ""
+          ? Number(value.z.substring(1))
+          : 0
+        : this.#commandException(
+            player,
+            `Cannot mix world & local coordinates (everything must either use ^ or not)`
+          ),
+    };
+
+    return LocalCoordinate(player, ...Object.values(localCoordinate));
+  }
+
+  /**
+   * @param {Player} player
+   * @param {string} selector
+   * @returns {[string, object]}
+   */
+  #parseSelector(player, selector) {
+    const target = selector.slice(0, 2);
+    const argument = selector.slice(3, -1);
+    const gameModeAliases = {
+      0: "survival",
+      1: "creative",
+      2: "adventure",
+      3: "spectator",
+      s: "survival",
+      c: "creative",
+      a: "adventure",
+      sp: "spectator",
+    };
+
+    //? Parsing the data into raw data
+    const rawQuery = {};
+    argument.match(/(?:scores|hasitem)\=\{.*?\}/g)?.forEach((value) => {
+      const key = value.slice(0, value.indexOf("="));
+      const val = value.substring(value.indexOf("=") + 1);
+      argument = argument.replace(value, "");
+      rawQuery[key.trim()] = val.trim();
+    });
+    argument
+      .split(",")
+      .filter((val) => val.trim() !== "")
+      .forEach((pair) => {
+        const [key, value] = pair.split("=");
+        rawQuery[key.trim()] = value.trim();
+      });
+
+    //? Convert type into EntityQueryOptions
+    const newQuery = {},
+      location = {},
+      volume = {};
+    for (const [key, value] of Object.entries(rawQuery)) {
+      if (key === "c") {
+        if (newQuery.farthest || newQuery.closest)
+          this.#commandException(
+            player,
+            'Duplicate "c" selector arguments',
+            "commands.generic.duplicateSelectorArgument",
+            ["c"]
+          );
+        else if (value.startsWith("-")) newQuery.farthest = Number(value);
+        else newQuery.closest = Number(value);
+      } else if (key === "dx") {
+        if (isNaN(Number(value)))
+          this.#commandException(
+            player,
+            `Invalid number (${value}) on "dx" selector arguments`,
+            "commands.generic.num.invalid",
+            [value]
+          );
+        else volume.x = Number(value);
+      } else if (key === "dy") {
+        if (isNaN(Number(value)))
+          this.#commandException(
+            player,
+            `Invalid number (${value}) on "dy" selector arguments`,
+            "commands.generic.num.invalid",
+            [value]
+          );
+        else volume.y = Number(value);
+      } else if (key === "dz") {
+        if (isNaN(Number(value)))
+          this.#commandException(
+            player,
+            `Invalid number (${value}) on "dz" selector arguments`,
+            "commands.generic.num.invalid",
+            [value]
+          );
+        else volume.z = Number(value);
+      } else if (key === "family") {
+        if (value.startsWith("!"))
+          !newQuery.excludeFamilies
+            ? (newQuery.excludeFamilies = [
+                value.startsWith('"') ? value.slice(2, -1) : value.slice(1),
+              ])
+            : newQuery.excludeFamilies.push(
+                value.startsWith('"') ? value.slice(2, -1) : value.slice(1)
+              );
+        else
+          !newQuery.families
+            ? (newQuery.families = [
+                value.startsWith('"') ? value.slice(1, -1) : value,
+              ])
+            : newQuery.families.push(
+                value.startsWith('"') ? value.slice(1, -1) : value
+              );
+      } else if (key === "hasitem") {
+        //* Hasitem currently disabled
+        player.tell('Ignoring "hasitem" argument selector');
+        console.warn('Ignoring "hasitem" argument selector');
+
+        let hasItem = {};
+        const hasItemData = value
+          .slice(1, -1)
+          .split(",")
+          .forEach((data) => {
+            const [key, val] = data.split("=");
+            hasItem[key.trim()] = val.trim();
+          });
+      } else if (key === "l") {
+        if (newQuery.maxLevel)
+          this.#commandException(
+            player,
+            'Duplicate "l" selector arguments',
+            "commands.generic.duplicateSelectorArgument",
+            ["l"]
+          );
+        else if (isNaN(Number(value)))
+          this.#commandException(
+            player,
+            `Invalid number (${value}) on "l" selector arguments`,
+            "commands.generic.num.invalid",
+            [value]
+          );
+        else newQuery.maxLevel = Number(value);
+      } else if (key === "lm") {
+        if (newQuery.minLevel)
+          this.#commandException(
+            player,
+            'Duplicate "lm" selector arguments',
+            "commands.generic.duplicateSelectorArgument",
+            ["lm"]
+          );
+        else if (isNaN(Number(value)))
+          this.#commandException(
+            player,
+            `Invalid number (${value}) on "lm" selector arguments`,
+            "commands.generic.num.invalid",
+            [value]
+          );
+        else newQuery.minLevel = Number(value);
+      } else if (key === "m") {
+        if (newQuery.gameMode)
+          this.#commandException(
+            player,
+            'Duplicate "m" selector arguments',
+            "commands.generic.duplicateSelectorArgument",
+            ["m"]
+          );
+        else if (value.startsWith("!"))
+          !newQuery.excludeGameModes
+            ? (newQuery.excludeGameModes = [
+                GameMode[gameModeAliases[value] ?? value] ??
+                  this.#commandException(
+                    player,
+                    `Invalid gamemode "${value}"`,
+                    "commands.gamemode.fail.invalid",
+                    [value]
+                  ),
+              ])
+            : newQuery.excludeGameModes.push(
+                GameMode[gameModeAliases[value] ?? value] ??
+                  this.#commandException(
+                    player,
+                    `Invalid gamemode "${value}"`,
+                    "commands.gamemode.fail.invalid",
+                    [value]
+                  )
+              );
+        else
+          newQuery.gameMode =
+            GameMode[gameModeAliases[value] ?? value] ??
+            this.#commandException(
+              player,
+              `Invalid gamemode "${value}"`,
+              "commands.gamemode.fail.invalid",
+              [value]
+            );
+      } else if (key === "name") {
+        if (newQuery.name)
+          this.#commandException(
+            player,
+            'Duplicate "name" selector arguments',
+            "commands.generic.tooManyNames",
+            []
+          );
+        else if (value.startsWith("!"))
+          !newQuery.excludeNames
+            ? (newQuery.excludeNames = [
+                value.startsWith('"') ? value.slice(2, -1) : value.slice(1),
+                ,
+              ])
+            : newQuery.excludeNames.push(
+                value.startsWith('"') ? value.slice(2, -1) : value.slice(1)
+              );
+        else newQuery.name = value.startsWith('"') ? value.slice(1, -1) : value;
+      } else if (key === "r") {
+        if (newQuery.maxDistance)
+          this.#commandException(
+            player,
+            'Duplicate "r" selector arguments',
+            "commands.generic.duplicateSelectorArgument",
+            ["r"]
+          );
+        else if (isNaN(Number(value)))
+          this.#commandException(
+            player,
+            `Invalid number (${value}) on "r" selector arguments`,
+            "commands.generic.num.invalid",
+            [value]
+          );
+        else if (Number(value) < 0)
+          this.#commandException(
+            player,
+            'Selector arguments "r" cannot negative',
+            "commands.generic.radiusNegative",
+            []
+          );
+        else newQuery.maxDistance = Number(value);
+      } else if (key === "rm") {
+        if (newQuery.minDistance)
+          this.#commandException(
+            player,
+            'Duplicate "rm" selector arguments',
+            "commands.generic.duplicateSelectorArgument",
+            ["rm"]
+          );
+        else if (isNaN(Number(value)))
+          this.#commandException(
+            player,
+            `Invalid number (${value}) on "rm" selector arguments`,
+            "commands.generic.num.invalid",
+            [value]
+          );
+        else if (Number(value) < 0)
+          this.#commandException(
+            player,
+            'Selector arguments "rm" cannot negative',
+            "commands.generic.radiusNegative",
+            []
+          );
+        else newQuery.minDistance = Number(value);
+      } else if (key === "rx") {
+        if (newQuery.maxHorizontalRotation)
+          this.#commandException(
+            player,
+            'Duplicate "rx" selector arguments',
+            "commands.generic.duplicateSelectorArgument",
+            ["rx"]
+          );
+        else if (isNaN(Number(value)))
+          this.#commandException(
+            player,
+            `Invalid number (${value}) on "rx" selector arguments`,
+            "commands.generic.num.invalid",
+            [value]
+          );
+        else if (Number(value) < -180 || Number(value) > 180)
+          this.#commandException(
+            player,
+            `Rotation out of range (X-MAX: ${value})`,
+            "commands.generic.rotationError",
+            []
+          );
+        else newQuery.maxHorizontalRotation = Number(value);
+      } else if (key === "rxm") {
+        if (newQuery.minHorizontalRotation)
+          this.#commandException(
+            player,
+            'Duplicate "rxm" selector arguments',
+            "commands.generic.duplicateSelectorArgument",
+            ["rxm"]
+          );
+        else if (isNaN(Number(value)))
+          this.#commandException(
+            player,
+            `Invalid number (${value}) on "rx" selector arguments`,
+            "commands.generic.num.invalid",
+            [value]
+          );
+        else if (Number(value) < -180 || Number(value) > 180)
+          this.#commandException(
+            player,
+            `Rotation out of range (X-MIN: ${value})`,
+            "commands.generic.rotationError",
+            []
+          );
+        else newQuery.minHorizontalRotation = Number(value);
+      } else if (key === "ry") {
+        if (newQuery.maxVerticalRotation)
+          this.#commandException(
+            player,
+            'Duplicate "ry" selector arguments',
+            "commands.generic.duplicateSelectorArgument",
+            ["ry"]
+          );
+        else if (isNaN(Number(value)))
+          this.#commandException(
+            player,
+            `Invalid number (${value}) on "ry" selector arguments`,
+            "commands.generic.num.invalid",
+            [value]
+          );
+        else if (Number(value) < -180 || Number(value) > 180)
+          this.#commandException(
+            player,
+            `Rotation out of range (Y-MAX: ${value})`,
+            "commands.generic.rotationError",
+            []
+          );
+        else newQuery.maxVerticalRotation = Number(value);
+      } else if (key === "rym") {
+        if (newQuery.minVerticalRotation)
+          this.#commandException(
+            player,
+            'Duplicate "rym" selector arguments',
+            "commands.generic.duplicateSelectorArgument",
+            ["rym"]
+          );
+        else if (isNaN(Number(value)))
+          this.#commandException(
+            player,
+            `Invalid number (${value}) on "ry" selector arguments`,
+            "commands.generic.num.invalid",
+            [value]
+          );
+        else if (Number(value) < -180 || Number(value) > 180)
+          this.#commandException(
+            player,
+            `Rotation out of range (Y-MIN: ${value})`,
+            "commands.generic.rotationError",
+            []
+          );
+        else newQuery.minVerticalRotation = Number(value);
+      } else if (key === "scores") {
+        const scorelist = value.slice(1, -1).split(",");
+        if (scorelist.length === 0) continue;
+
+        let scoreData = [];
+        for (const scoreArg of scorelist) {
+          let scoreCurrent = {};
+          let [scoreObj, scoreVal] = scoreArg.split("=");
+          scoreVal = scoreVal.trim();
+          scoreCurrent.objective = scoreObj.trim();
+
+          if (scoreVal.startsWith("!")) {
+            scoreCurrent.exclude = true;
+            scoreVal.slice(1);
+          }
+
+          const scoreRange = scoreVal.split("..");
+          if (scoreRange.length === 1) {
+            const scr = Number(scoreRange[0]);
+            if (isNaN(scr))
+              this.#commandException(
+                player,
+                `Invalid number (${scr}) on "scores" selector arguments with objective ${scoreObj.trim()}`,
+                "commands.generic.num.invalid",
+                [scr]
+              );
+            scoreCurrent.maxScore = scr;
+            scoreCurrent.minScore = scr;
+          } else if (scoreRange[0].length === 0) {
+            const scr = Number(scoreRange[1]);
+            if (isNaN(scr))
+              this.#commandException(
+                player,
+                `Invalid number (${scr}) on "scores" selector arguments with objective ${scoreObj.trim()}`,
+                "commands.generic.num.invalid",
+                [scr]
+              );
+            scoreCurrent.maxScore = scr;
+          } else if (scoreRange[1].length === 0) {
+            const scr = Number(scoreRange[0]);
+            if (isNaN(scr))
+              this.#commandException(
+                player,
+                `Invalid number (${scr}) on "scores" selector arguments with objective ${scoreObj.trim()}`,
+                "commands.generic.num.invalid",
+                [scr]
+              );
+            scoreCurrent.minScore = scr;
+          }
+          scoreData.push(scoreCurrent);
+        }
+        newQuery.scoreOptions = scoreData;
+      } else if (key === "tag") {
+        if (value.startsWith("!"))
+          !newQuery.excludeTags
+            ? (newQuery.excludeTags = [
+                value.startsWith('"') ? value.slice(2, -1) : value.slice(1),
+                ,
+              ])
+            : newQuery.excludeTags.push(
+                value.startsWith('"') ? value.slice(2, -1) : value.slice(1)
+              );
+        else
+          !newQuery.tags
+            ? (newQuery.tags = [
+                value.startsWith('"') ? value.slice(1, -1) : value,
+              ])
+            : newQuery.tags.push(
+                value.startsWith('"') ? value.slice(1, -1) : value
+              );
+      } else if (key === "type") {
+        if (newQuery.type)
+          this.#commandException(
+            player,
+            'Duplicate "type" selector arguments',
+            "commands.generic.duplicateType",
+            []
+          );
+        else if (value.startsWith("!"))
+          !newQuery.excludeGameModes
+            ? (newQuery.excludeGameModes = [
+                value.startsWith('"') ? value.slice(2, -1) : value.slice(1),
+              ])
+            : newQuery.excludeGameModes.push(
+                value.startsWith('"') ? value.slice(2, -1) : value.slice(1)
+              );
+        else newQuery.type = value.startsWith('"') ? value.slice(1, -1) : value;
+      } else if (key === "x") {
+        if (isNaN(Number(value)))
+          this.#commandException(
+            player,
+            `Invalid number (${value}) on "x" selector arguments`,
+            "commands.generic.num.invalid",
+            [value]
+          );
+        else location.x = Number(value);
+      } else if (key === "y") {
+        if (isNaN(Number(value)))
+          this.#commandException(
+            player,
+            `Invalid number (${value}) on "y" selector arguments`,
+            "commands.generic.num.invalid",
+            [value]
+          );
+        else location.y = Number(value);
+      } else if (key === "z") {
+        if (isNaN(Number(value)))
+          this.#commandException(
+            player,
+            `Invalid number (${value}) on "z" selector arguments`,
+            "commands.generic.num.invalid",
+            [value]
+          );
+        else location.z = Number(value);
+      }
+    }
+
+    //? Validation data
+    if (
+      location.hasOwnProperty("x") ||
+      location.hasOwnProperty("y") ||
+      location.hasOwnProperty("z")
+    ) {
+      newQuery.location = {
+        x: location.x ?? player.location.x,
+        y: location.y ?? player.location.y,
+        z: location.z ?? player.location.z,
+      };
+    }
+    if (
+      volume.hasOwnProperty("x") ||
+      volume.hasOwnProperty("y") ||
+      volume.hasOwnProperty("z")
+    ) {
+      newQuery.volume = new BlockAreaSize(
+        volume.x ?? 0,
+        volume.y ?? 0,
+        volume.z ?? 0
+      );
+    }
+    if (
+      newQuery.minLevel &&
+      newQuery.maxLevel &&
+      newQuery.minLevel > newQuery.maxLevel
+    ) {
+      this.#commandException(
+        player,
+        "Min level is higher than max level",
+        "commands.generic.levelError",
+        []
+      );
+    }
+    if (
+      newQuery.minDistance &&
+      newQuery.maxDistance &&
+      newQuery.minDistance > newQuery.maxDistance
+    ) {
+      this.#commandException(
+        player,
+        "Min radius is higher than max radius",
+        "commands.generic.radiusError",
+        []
+      );
+    }
+
+    return [target, newQuery];
   }
 
   //* Error handling
@@ -834,32 +1665,29 @@ class CustomCommand {
    * @throws Error command
    */
   #commandException(player, message, langKey = "", langValue = []) {
-    let rawtext;
+    let text = { rawtext: [{ text: "§c" + message }] };
     if (langKey) {
-      rawtext = {
-        rawtext: [
-          {
-            translate: langKey,
-            with: {
-              rawtext:
-                langValue?.map((val) => {
-                  return {
-                    text: "" + val,
-                  };
-                }) ?? [],
-            },
-          },
-        ],
+      text = {
+        rawtext: [{ text: "§c" }, { translate: langKey }],
+      };
+    }
+    if (langKey && langValue.length !== 0) {
+      text.rawtext[1].with = {
+        rawtext: langValue.map((val) => {
+          return {
+            text: "" + val,
+          };
+        }),
       };
     }
 
-    if (player instanceof Player && rawtext) {
-      player.runCommandAsync(`tellraw @s ${JSON.stringify(rawtext)}`);
-    } else if (typeof player === "string" && rawtext) {
-      rawtext.rawtext.splice(0, 0, `[/scriptevent][${player}]: `);
+    if (player instanceof Player) {
+      player.runCommandAsync(`tellraw @s ${JSON.stringify(text)}`);
+    } else if (typeof player === "string") {
+      text.rawtext.splice(1, 0, `[/scriptevent][${player}]: `);
       world
         .getDimension("overworld")
-        .runCommandAsync(`tellraw @s ${JSON.stringify(rawtext)}`);
+        .runCommandAsync(`tellraw @s ${JSON.stringify(text)}`);
     }
 
     throw message;
@@ -869,7 +1697,7 @@ class CustomCommand {
   #chatEvent() {
     world.events.beforeChat.subscribe((eventChat) => {
       const { message, sender: player } = eventChat;
-      if (message.startsWith(this.#commandOptions.prefix)) {
+      if (message.startsWith(this.prefix)) {
         // Cancel the message being sent
         eventChat.cancel = true;
         // Run the command
@@ -910,6 +1738,11 @@ class CustomCommand {
 
     try {
       this.#commandList[data.command].callback(player, data);
+      console.log(
+        `Successfully run '/${data.command} with data: \n${JSON.stringify(
+          data
+        )}'`
+      );
     } catch (error) {
       this.#commandException(
         player,

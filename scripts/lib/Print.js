@@ -17,8 +17,8 @@ import { world, Player } from "@minecraft/server";
  */
 export default function Print(message, target = "", prefix = null) {
   target instanceof Player
-    ? target.tell(message)
+    ? target.sendMessage(message)
     : target === ""
-    ? world.say(message)
-    : world.getPlayers({ name: target })[0].tell(message);
+    ? world.sendMessage(message)
+    : world.getPlayers({ name: target })[0].sendMessage(message);
 }

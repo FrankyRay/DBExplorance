@@ -1,6 +1,5 @@
-// @ts-check
 import "./MainConfig";
-import { BlockRaycastOptions, world } from "@minecraft/server";
+import { world } from "@minecraft/server";
 
 world.events.tick.subscribe((tick) => {
   for (const player of world.getPlayers()) {
@@ -94,10 +93,11 @@ function PlayerTick(player, type) {
  * @param {string} type
  */
 function BlockTick(player, type) {
-  let blockOption = new BlockRaycastOptions();
-  blockOption.includeLiquidBlocks = true;
-  blockOption.includePassableBlocks = true;
-  blockOption.maxDistance = 10;
+  let blockOption = {
+    includeLiquidBlocks: true,
+    includePassableBlocks: true,
+    maxDistance: 10,
+  };
 
   let block = player.getBlockFromViewVector(blockOption);
   if (!block) return "Block's Component Info [ /infotick ]< Block Empty >";

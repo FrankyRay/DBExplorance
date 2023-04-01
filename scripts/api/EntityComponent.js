@@ -1,10 +1,11 @@
-import { world, EntityRaycastOptions } from "@minecraft/server";
+import { world } from "@minecraft/server";
 import { MessageFormData } from "@minecraft/server-ui";
 
 world.events.beforeItemUse.subscribe((event) => {
   const { item, source } = event;
-  const EntityRay = new EntityRaycastOptions();
-  EntityRay.maxDistance = 10;
+  const EntityRay = {
+    maxDistance: 10,
+  };
 
   const entity = source.getEntitiesFromViewVector(EntityRay)[0];
   if (!entity) return;

@@ -1,11 +1,5 @@
 // Work In Progress
-import {
-  ItemStack,
-  ItemTypes,
-  Location,
-  Player,
-  world,
-} from "@minecraft/server";
+import { ItemStack, ItemTypes, Player, world } from "@minecraft/server";
 import Print from "../../../lib/Print.js";
 import { AddEnchantment } from "../../../lib/Enchantments.js";
 
@@ -208,10 +202,11 @@ function ItemSpawn(player, args) {
   );
   const readyItem = ItemPropertyUpdate(initItem, itemComp);
 
-  player.dimension.spawnItem(
-    readyItem,
-    new Location(parseInt(x), parseInt(y), parseInt(z))
-  );
+  player.dimension.spawnItem(readyItem, {
+    x: parseInt(x),
+    y: parseInt(y),
+    z: parseInt(z),
+  });
 
   Print(`Successfully spawn ${amount} ${name} at ${x}, ${y}, ${z}`);
 }
